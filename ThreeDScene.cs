@@ -389,4 +389,3 @@ SolarS.SetEarthPositionToZero();
 
 
 } // Class
-
