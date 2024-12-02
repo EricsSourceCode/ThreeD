@@ -33,19 +33,15 @@ using System.Windows.Forms.Integration;
 
 public class ThreeDForm : Form
 {
+=====
 private MainData mData;
+private System.Windows.Forms.Panel TopPanel;
+private System.Windows.Forms.Panel ThreeDPanel;
+private ElementHost MainElementHost;
+private System.Windows.Forms.TextBox focusTextBox;
+private Viewport3D ViewPort;
+// private ThreeDScene Scene;
 
-/*
-  private MenuStrip menuStrip1;
-  private ToolStripMenuItem fileToolStripMenuItem;
-  private ToolStripMenuItem closeToolStripMenuItem;
-  private System.Windows.Forms.Panel TopPanel;
-  private System.Windows.Forms.Panel ThreeDPanel;
-  private ElementHost MainElementHost;
-  private System.Windows.Forms.TextBox textBox1;
-  private Viewport3D ViewPort;
-  private ThreeDScene Scene;
-*/
 
 
 private ThreeDForm()
@@ -58,169 +54,150 @@ internal ThreeDForm( MainData useMainData )
 {
 mData = useMainData;
 
-/*
-    try
-    {
-    MForm = UseForm;
+try
+{
+setupGUI();
 
-    // InitializeComponent();
-    SetupGUI();
-
-    // MForm.ShowStatus( "ThreeDForm was created." );
-
-    }
-    catch( Exception Except )
-      {
-      MessageBox.Show( "Exception in ThreeDForm constructor: " + Except.Message, MainForm.MessageBoxTitle, MessageBoxButtons.OK );
-      return;
-      }
-*/
+}
+catch( Exception ) // Except )
+  {
+  mData.showStatus(
+       "Exception in ThreeDForm constructor." );
+  return;
+  }
 }
 
 
 
-/*
-  private void SetupGUI()
-    {
-    menuStrip1 = new System.Windows.Forms.MenuStrip();
-    fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-    closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-    TopPanel = new System.Windows.Forms.Panel();
-    ThreeDPanel = new System.Windows.Forms.Panel();
-    textBox1 = new System.Windows.Forms.TextBox();
+private void setupGUI()
+{
+TopPanel = new System.Windows.Forms.Panel();
+ThreeDPanel = new System.Windows.Forms.Panel();
+focusTextBox = new System.Windows.Forms.TextBox();
 
-    ThreeDPanel.BackColor = Color.Black;
+ThreeDPanel.BackColor = Color.Black;
 
-    MainElementHost = new System.Windows.Forms.Integration.ElementHost();
-    ViewPort = new Viewport3D();
+MainElementHost = new System.Windows.Forms.
+                      Integration.ElementHost();
+ViewPort = new Viewport3D();
 
-    InitializeGuiComponents();
+initGuiComponents();
 
-    Scene = new ThreeDScene( MForm );
-    MainElementHost.Child = ViewPort;
+// Scene = new ThreeDScene( MForm );
+MainElementHost.Child = ViewPort;
 
-    ViewPort.Children.Clear();
-    ViewPort.Children.Add( Scene.GetMainModelVisual3D() );
+ViewPort.Children.Clear();
+// ViewPort.Children.Add( 
+   //         Scene.GetMainModelVisual3D() );
 
-    ViewPort.Camera = Scene.GetCamera();
-    // Scene.RefFrame.MakeNewGeometryModels();
-    Scene.SolarS.MakeNewGeometryModels();
-    }
+// ViewPort.Camera = Scene.GetCamera();
+// Scene.RefFrame.MakeNewGeometryModels();
+// Scene.SolarS.MakeNewGeometryModels();
+}
 
 
 
 
 
-  private void InitializeGuiComponents()
-    {
-    menuStrip1.SuspendLayout();
-    TopPanel.SuspendLayout();
-    ThreeDPanel.SuspendLayout();
-    this.SuspendLayout();
+private void initGuiComponents()
+{
+TopPanel.SuspendLayout();
+ThreeDPanel.SuspendLayout();
+this.SuspendLayout();
 
-    menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-    menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
-    menuStrip1.Location = new System.Drawing.Point(0, 0);
-    menuStrip1.Name = "menuStrip1";
-    menuStrip1.Size = new System.Drawing.Size(617, 28);
-    menuStrip1.TabIndex = 1;
-    menuStrip1.Text = "menuStrip1";
-    menuStrip1.Font = new System.Drawing.Font("Segoe UI", 38F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+TopPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+TopPanel.Controls.Add( focusTextBox );
+TopPanel.Dock = System.Windows.Forms.
+                                DockStyle.Top;
+TopPanel.Location = new System.Drawing.
+                                Point(0, 28);
+TopPanel.Name = "TopPanel";
+TopPanel.Size = new System.Drawing.
+                               Size(617, 72);
+TopPanel.TabIndex = 2;
 
-    fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.closeToolStripMenuItem});
-    fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-    fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
-    fileToolStripMenuItem.Text = "&File";
+ThreeDPanel.BorderStyle = System.Windows.
+                  Forms.BorderStyle.FixedSingle;
+ThreeDPanel.Controls.Add(
+                   this.MainElementHost );
+ThreeDPanel.Dock = System.Windows.Forms.
+                              DockStyle.Fill;
+ThreeDPanel.Location = new System.
+                         Drawing.Point(0, 109);
+ThreeDPanel.Name = "ThreeDPanel";
+ThreeDPanel.Size = new System.Drawing.
+                              Size(617, 290);
+ThreeDPanel.TabIndex = 3;
 
-    closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-    closeToolStripMenuItem.Size = new System.Drawing.Size(120, 26);
-    closeToolStripMenuItem.Text = "&Close";
-    closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+MainElementHost.Dock = System.Windows.
+                         Forms.DockStyle.Fill;
+MainElementHost.Location = new
+                     System.Drawing.Point(0, 0);
+MainElementHost.Name = "MainElementHost";
+MainElementHost.Size = new System.
+                        Drawing.Size(615, 301);
+MainElementHost.TabIndex = 0;
+MainElementHost.Text = "elementHost1";
+// MainElementHost.Child = null;
 
-    TopPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-    TopPanel.Controls.Add(this.textBox1);
-    TopPanel.Dock = System.Windows.Forms.DockStyle.Top;
-    TopPanel.Location = new System.Drawing.Point(0, 28);
-    TopPanel.Name = "TopPanel";
-    TopPanel.Size = new System.Drawing.Size(617, 72);
-    TopPanel.TabIndex = 2;
+focusTextBox.Location = new System.
+                         Drawing.Point(26, 14);
+focusTextBox.Name = "focusTextBox";
+focusTextBox.Size = new System.Drawing.
+                             Size( 50, 22 );
+focusTextBox.TabIndex = 0;
 
-    ThreeDPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-    ThreeDPanel.Controls.Add(this.MainElementHost);
-    ThreeDPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-    ThreeDPanel.Location = new System.Drawing.Point(0, 109);
-    ThreeDPanel.Name = "ThreeDPanel";
-    ThreeDPanel.Size = new System.Drawing.Size(617, 290);
-    ThreeDPanel.TabIndex = 3;
+// this.AutoScaleDimensions = new System.
+//                      Drawing.SizeF(8F, 16F);
+this.AutoScaleMode = System.Windows.Forms.
+                  AutoScaleMode.None; // Font;
+this.ClientSize = new System.Drawing.
+                              Size(617, 412);
+this.Controls.Add( this.ThreeDPanel );
+this.Controls.Add( this.TopPanel );
+this.KeyPreview = true;
+this.Name = "ThreeDForm";
+this.Text = "ThreeDForm";
+this.WindowState = System.Windows.Forms.
+                    FormWindowState.Maximized;
+this.KeyDown += new System.Windows.Forms.
+                     KeyEventHandler(
+                     this.ThreeDForm_KeyDown );
+this.Font = new System.Drawing.Font(
+             "Consolas", 34.0F, 
+             System.Drawing.FontStyle.Regular,
+             System.Drawing.GraphicsUnit.Pixel,
+             ((byte)(0)));
+// this.FormClosing += new System.Windows.
+//         Forms.FormClosingEventHandler(
+//         this.MainForm_FormClosing );
 
-    MainElementHost.Dock = System.Windows.Forms.DockStyle.Fill;
-    MainElementHost.Location = new System.Drawing.Point(0, 0);
-    MainElementHost.Name = "MainElementHost";
-    MainElementHost.Size = new System.Drawing.Size(615, 301);
-    MainElementHost.TabIndex = 0;
-    MainElementHost.Text = "elementHost1";
-    // MainElementHost.Child = null;
-
-    textBox1.Location = new System.Drawing.Point(26, 14);
-    textBox1.Name = "textBox1";
-    textBox1.Size = new System.Drawing.Size(100, 22);
-    textBox1.TabIndex = 0;
-
-    // this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-    this.AutoScaleMode = System.Windows.Forms.
-                    AutoScaleMode.None; // Font;
-    this.ClientSize = new System.Drawing.Size(617, 412);
-    this.Controls.Add(this.ThreeDPanel);
-    this.Controls.Add(this.TopPanel);
-    this.Controls.Add(this.menuStrip1);
-    this.KeyPreview = true;
-    this.MainMenuStrip = this.menuStrip1;
-    this.Name = "ThreeDForm";
-    this.Text = "ThreeDForm";
-    this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-    this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ThreeDForm_KeyDown);
-    this.Font = new System.Drawing.Font( "Consolas", 34.0F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-    // this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.MainForm_FormClosing );
-
-    menuStrip1.ResumeLayout(false);
-    menuStrip1.PerformLayout();
-    TopPanel.ResumeLayout(false);
-    TopPanel.PerformLayout();
-    ThreeDPanel.ResumeLayout(false);
-    this.ResumeLayout(false);
-    this.PerformLayout();
-    }
+TopPanel.ResumeLayout(false);
+TopPanel.PerformLayout();
+ThreeDPanel.ResumeLayout(false);
+this.ResumeLayout(false);
+this.PerformLayout();
+}
 
 
+internal void FreeEverything()
+{
+TopPanel.Dispose();
+ThreeDPanel.Dispose();
+MainElementHost.Dispose();
+focusTextBox.Dispose();
+// ViewPort.Dispose(); ??
+// Scene;
+}
 
-  internal void FreeEverything()
-    {
-    menuStrip1.Dispose();
-    fileToolStripMenuItem.Dispose();
-    closeToolStripMenuItem.Dispose();
-    TopPanel.Dispose();
-    ThreeDPanel.Dispose();
-    MainElementHost.Dispose();
-    textBox1.Dispose();
-    // ViewPort.Dispose();
-    // Scene;
-    }
-
-
-  private void closeToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-    Close();
-    }
 
 
 
 private void ThreeDForm_KeyDown(
-                    object sender, KeyEventArgs e)
+                 object sender, KeyEventArgs e)
 {
-    try
-    {
+try
+{
 // A  The A key.
 // Add The add key.
 // D0 The 0 key.
@@ -236,16 +213,16 @@ private void ThreeDForm_KeyDown(
 // Subtract The subtract key.
 // Tab The TAB key.
 
-    double Angle = NumbersEC.DegreesToRadians( 2 );
+double Angle = MathF.DegreesToRadians( 2 );
 
-    if( e.Control )
-      {
-      if( e.KeyCode == Keys.T )
-        {
-        Scene.RotateView();
+/*
+if( e.Control )
+  {
+  if( e.KeyCode == Keys.T )
+    {
+    Scene.RotateView();
 
 
-//////////
   private void SetCameraTo( double X,
                             double Y,
                             double Z,
@@ -255,13 +232,14 @@ private void ThreeDForm_KeyDown(
                             double UpX,
                             double UpY,
                             double UpZ )
-///////////////
-        return;
-        }
 
-      if( e.KeyCode == Keys.S )
-        {
-        Scene.DoTimeStep();
+  return;
+  }
+
+
+if( e.KeyCode == Keys.S )
+  {
+  Scene.DoTimeStep();
 
 
 
@@ -401,15 +379,16 @@ private void ThreeDForm_KeyDown(
       {
       Scene.MoveUpDown( -Angle );
       }
-
-    }
-    catch( Exception Except )
-      {
-      MessageBox.Show( "Exception in ThreeDForm.KeyDown: " + Except.Message, MainForm.MessageBoxTitle, MessageBoxButtons.OK );
-      }
+*/
 
 }
-*/
+catch( Exception ) // Except )
+  {
+  mData.showStatus( 
+       "Exception in ThreeDForm.KeyDown." );
+  }
+}
+
 
 
 
