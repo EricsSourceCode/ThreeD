@@ -33,7 +33,6 @@ using System.Windows.Forms.Integration;
 
 public class ThreeDForm : Form
 {
-=====
 private MainData mData;
 private System.Windows.Forms.Panel TopPanel;
 private System.Windows.Forms.Panel ThreeDPanel;
@@ -87,7 +86,7 @@ initGuiComponents();
 MainElementHost.Child = ViewPort;
 
 ViewPort.Children.Clear();
-// ViewPort.Children.Add( 
+// ViewPort.Children.Add(
    //         Scene.GetMainModelVisual3D() );
 
 // ViewPort.Camera = Scene.GetCamera();
@@ -164,7 +163,7 @@ this.KeyDown += new System.Windows.Forms.
                      KeyEventHandler(
                      this.ThreeDForm_KeyDown );
 this.Font = new System.Drawing.Font(
-             "Consolas", 34.0F, 
+             "Consolas", 34.0F,
              System.Drawing.FontStyle.Regular,
              System.Drawing.GraphicsUnit.Pixel,
              ((byte)(0)));
@@ -384,7 +383,7 @@ if( e.KeyCode == Keys.S )
 }
 catch( Exception ) // Except )
   {
-  mData.showStatus( 
+  mData.showStatus(
        "Exception in ThreeDForm.KeyDown." );
   }
 }

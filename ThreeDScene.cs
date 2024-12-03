@@ -19,8 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Media.Imaging;
 
-// For testing.
-// using System.Windows.Forms;
+
 
 
 // namespace
@@ -30,14 +29,13 @@ using System.Windows.Media.Imaging;
 class ThreeDScene
 {
 private MainData mData;
+private PerspectiveCamera PCamera;
+private Model3DGroup Main3DGroup;
+private ModelVisual3D MainModelVisual3D;
 
-/*
-  private PerspectiveCamera PCamera = new PerspectiveCamera();
-  private Model3DGroup Main3DGroup = new Model3DGroup();
-  private ModelVisual3D MainModelVisual3D = new ModelVisual3D();
-  internal SolarSystem SolarS;
+// This is the GeomModel now:
+//       internal SolarSystem SolarS;
 
-*/
 
 
 
@@ -51,25 +49,29 @@ internal ThreeDScene( MainData useMainData )
 {
 mData = useMainData;
 
+try
+{
+PCamera = new PerspectiveCamera();
+Main3DGroup = new Model3DGroup();
+MainModelVisual3D = new ModelVisual3D();
+
+//    SolarS = new SolarSystem( 
+//       MForm, Main3DGroup );
+
 /*
-    try
-    {
-    MForm = UseForm;
-
-    SolarS = new SolarSystem( MForm, Main3DGroup );
-
     SetupCamera();
     MainModelVisual3D.Content = Main3DGroup;
 
     MoveToEarthView();
-
-    }
-    catch( Exception Except )
-      {
-      MForm.ShowStatus( "Exception in ThreeScene constructor: " + Except.Message );
-      return;
-      }
 */
+
+}
+catch( Exception ) // Except )
+  {
+  mData.showStatus( 
+      "Exception in ThreeScene constructor." );
+  return;
+  }
 }
 
 
