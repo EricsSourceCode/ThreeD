@@ -38,8 +38,8 @@ private System.Windows.Forms.Panel TopPanel;
 private System.Windows.Forms.Panel ThreeDPanel;
 private ElementHost MainElementHost;
 private System.Windows.Forms.TextBox focusTextBox;
-private Viewport3D ViewPort;
-// private ThreeDScene Scene;
+private Viewport3D viewPort;
+private ThreeDScene scene;
 
 
 
@@ -78,20 +78,27 @@ ThreeDPanel.BackColor = Color.Black;
 
 MainElementHost = new System.Windows.Forms.
                       Integration.ElementHost();
-ViewPort = new Viewport3D();
+viewPort = new Viewport3D();
+
+// ======
+// Can it get keyboard input?
+// viewPort.Focusable
 
 initGuiComponents();
 
-// Scene = new ThreeDScene( MForm );
-MainElementHost.Child = ViewPort;
+scene = new ThreeDScene( mData );
+MainElementHost.Child = viewPort;
 
-ViewPort.Children.Clear();
-// ViewPort.Children.Add(
-   //         Scene.GetMainModelVisual3D() );
+viewPort.Children.Clear();
+viewPort.Children.Add(
+            scene.getMainModelVisual3D() );
 
-// ViewPort.Camera = Scene.GetCamera();
-// Scene.RefFrame.MakeNewGeometryModels();
+viewPort.Camera = scene.getCamera();
+/*
+scene.RefFrame.MakeNewGeometryModels();
+// =======
 // Scene.SolarS.MakeNewGeometryModels();
+*/
 }
 
 

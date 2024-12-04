@@ -31,26 +31,13 @@ class GeomModel
 {
 private MainData mData;
 
-/*
-  private Model3DGroup Main3DGroup;
-  private SpaceObject[] SpaceObjectArray;
-  private int SpaceObjectArrayLast = 0;
-  private const double RadiusScale = 300.0;
-  private PlanetSphere Sun;
-  private PlanetSphere SunSmall;
-  private PlanetSphere MoonSmall;
-  private PlanetSphere JupiterSmall;
-  private PlanetSphere MarsSmall;
-  private PlanetSphere VenusSmall;
-  private EarthGeoid Earth;
-  private PlanetSphere Moon;
-  // private PlanetSphere SpaceStation;
-  // Mark Leadville's position:
-  // private PlanetSphere Leadville;
+private Model3DGroup main3DGroup;
+// private SpaceObject[] SpaceObjectArray;
+//  private int SpaceObjectArrayLast = 0;
+//  private const double RadiusScale = 300.0;
+//  private PlanetSphere Sun;
+//  private ECTime SunTime; // Local time.
 
-
-  private ECTime SunTime; // Local time.
-*/
 
 
 private GeomModel()
@@ -60,20 +47,18 @@ private GeomModel()
 
 
 internal GeomModel( MainData useMainData,
-                    Model3DGroup Use3DGroup )
+                    Model3DGroup use3DGroup )
 {
 mData = useMainData;
 
-/*
-    Main3DGroup = Use3DGroup;
+main3DGroup = use3DGroup;
 
-    // The local time for the sun.
-    SunTime = new ECTime();
-    SunTime.SetToNow();
+// The local time for the sun.
+//    SunTime = new ECTime();
+//    SunTime.SetToNow();
 
-    SpaceObjectArray = new SpaceObject[2];
-    AddInitialSpaceObjects();
-*/
+//     SpaceObjectArray = new SpaceObject[2];
+//    AddInitialSpaceObjects();
 }
 
 
@@ -737,29 +722,36 @@ Earth rotation angle and all that.
 
       }
     }
+*/
 
 
 
-  internal void MakeNewGeometryModels()
-    {
-    Main3DGroup.Children.Clear();
 
-    for( int Count = 0; Count < SpaceObjectArrayLast; Count++ )
-      {
-      SpaceObjectArray[Count].MakeNewGeometryModel();
-      GeometryModel3D GeoMod = SpaceObjectArray[Count].GetGeometryModel();
-      if( GeoMod == null )
-        continue;
+internal void makeNewGeometryModels()
+{
+main3DGroup.Children.Clear();
 
-      Main3DGroup.Children.Add( GeoMod );
-      }
+/*
+for( int Count = 0; Count <
+          SpaceObjectArrayLast; Count++ )
+  {
+  SpaceObjectArray[Count].MakeNewGeometryModel();
+  GeometryModel3D GeoMod = SpaceObjectArray[
+                 Count].GetGeometryModel();
+  if( GeoMod == null )
+    continue;
 
-    SetupAmbientLight();
-    SetupSunlight();
-    }
+  Main3DGroup.Children.Add( GeoMod );
+  }
+*/
+
+setupAmbientLight();
+setupMainLight();
+}
 
 
 
+/*
   internal void ResetGeometryModels()
     {
     Main3DGroup.Children.Clear();
@@ -773,116 +765,91 @@ Earth rotation angle and all that.
       Main3DGroup.Children.Add( GeoMod );
       }
 
-    SetupAmbientLight();
-    SetupSunlight();
+    setupAmbientLight();
+    setupMainLight();
     }
+*/
 
 
 
-
-  private void SetupSunlight()
-    {
-    // Lights are Model3D objects.
-    //System.Windows.Media.Media3D.Model3D
+private void setupMainLight()
+{
+// Lights are Model3D objects.
+// System.Windows.Media.Media3D.Model3D
 // System.Windows.Media.Media3D.Light
 
-    // double OuterDistance = 1.5;
+setupPointLight( 0, // X
+                 0, // Y
+                 0 ); // Z
 
-    double X = Sun.Position.X * ModelConstants.ThreeDSizeScale;
-    double Y = Sun.Position.Y * ModelConstants.ThreeDSizeScale;
-    double Z = Sun.Position.Z * ModelConstants.ThreeDSizeScale;
-    double RadiusScaled = 5 * Sun.Radius *
-                  ModelConstants.ThreeDSizeScale;
-
-    SetupPointLight( X,
-                     Y,
-                     Z );
-
-    SetupPointLight( X + RadiusScaled ,
-                     Y,
-                     Z );
-
-    SetupPointLight( X - RadiusScaled ,
-                     Y,
-                     Z );
-
-    SetupPointLight( X,
-                     Y + RadiusScaled,
-                     Z );
-
-    SetupPointLight( X,
-                     Y - RadiusScaled,
-                     Z );
-
-    SetupPointLight( X,
-                     Y,
-                     Z + RadiusScaled );
-
-    SetupPointLight( X,
-                     Y,
-                     Z - RadiusScaled );
-
-    }
+}
 
 
 
-  private void SetupPointLight( double X,
-                                double Y,
-                                double Z )
-    {
-    PointLight PLight1 = new PointLight();
-    PLight1.Color = System.Windows.Media.Colors.White;
+private void setupPointLight( double X,
+                              double Y,
+                              double Z )
+{
+PointLight pLight1 = new PointLight();
+pLight1.Color = System.Windows.Media.
+                               Colors.White;
 
-    Point3D Location = new  Point3D( X, Y, Z );
-    PLight1.Position = Location;
-    PLight1.Range = 100000000.0;
+Point3D location = new  Point3D( X, Y, Z );
+pLight1.Position = location;
+pLight1.Range = 100000000.0;
 
-    // Attenuation with distance D is like:
-    // Attenuation = C + L*D + Q*D^2
-    PLight1.ConstantAttenuation = 1;
+// Attenuation with distance D is like:
+// Attenuation = C + L*D + Q*D^2
+
+pLight1.ConstantAttenuation = 1;
+
     // PLight.LinearAttenuation = 1;
     // PLight.QuadraticAttenuation = 1;
 
-    Main3DGroup.Children.Add( PLight1 );
-    }
+main3DGroup.Children.Add( pLight1 );
+}
 
 
 
-  private void SetupAmbientLight()
-    {
-    byte RGB = 0x0F;
-    SetupAmbientLightColors( RGB, RGB, RGB );
-    }
+private void setupAmbientLight()
+{
+byte RGB = 0x0F;
+setupAmbientLightColors( RGB, RGB, RGB );
+}
 
 
 
-  private void SetupAmbientLightColors( byte Red,
-                                        byte Green,
-                                        byte Blue )
-    {
-    try
-    {
-    AmbientLight AmbiLight = new AmbientLight();
-    // AmbiLight.Color = System.Windows.Media.Colors.Gray; // AliceBlue
+private void setupAmbientLightColors(
+                                  byte red,
+                                  byte green,
+                                  byte blue )
+{
+try
+{
+AmbientLight ambiLight = new AmbientLight();
+// AmbiLight.Color = System.Windows.
+//         Media.Colors.Gray; // AliceBlue
 
-    Color AmbiColor = new Color();
-    AmbiColor.R = Red;
-    AmbiColor.G = Green;
-    AmbiColor.B = Blue;
+Color ambiColor = new Color();
+ambiColor.R = red;
+ambiColor.G = green;
+ambiColor.B = blue;
 
-    AmbiLight.Color = AmbiColor;
+ambiLight.Color = ambiColor;
 
-    Main3DGroup.Children.Add( AmbiLight );
-    }
-    catch( Exception Except )
-      {
-      ShowStatus( "Exception in ThreeDScene.SetupAmbientLight(): " + Except.Message );
-      }
-    }
+main3DGroup.Children.Add( ambiLight );
+}
+catch( Exception ) //  Except )
+  {
+  mData.showStatus(
+    "Exception: ThreeDScene.setupAmbientLight()"
+    );
+  }
+}
 
 
 
-
+/*
   internal void RotateView()
     {
     // Sidereal period for one day on Earth is

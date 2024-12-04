@@ -8,7 +8,7 @@
 // https://www.gnu.org/licenses/gpl-3.0.html
 
 
-// MoveToDefaultView();
+// moveToDefaultView();
 
 
 
@@ -29,12 +29,11 @@ using System.Windows.Media.Imaging;
 class ThreeDScene
 {
 private MainData mData;
-private PerspectiveCamera PCamera;
-private Model3DGroup Main3DGroup;
-private ModelVisual3D MainModelVisual3D;
+private PerspectiveCamera pCamera;
+private Model3DGroup main3DGroup;
+private ModelVisual3D mainModelVisual3D;
+internal GeomModel geomModel; // SolarSystem
 
-// This is the GeomModel now:
-//       internal SolarSystem SolarS;
 
 
 
@@ -51,24 +50,18 @@ mData = useMainData;
 
 try
 {
-PCamera = new PerspectiveCamera();
-Main3DGroup = new Model3DGroup();
-MainModelVisual3D = new ModelVisual3D();
+pCamera = new PerspectiveCamera();
+main3DGroup = new Model3DGroup();
+mainModelVisual3D = new ModelVisual3D();
+geomModel = new GeomModel( mData, main3DGroup );
 
-//    SolarS = new SolarSystem( 
-//       MForm, Main3DGroup );
-
-/*
-    SetupCamera();
-    MainModelVisual3D.Content = Main3DGroup;
-
-    MoveToEarthView();
-*/
-
+setupCamera();
+mainModelVisual3D.Content = main3DGroup;
+moveToDefaultView();
 }
 catch( Exception ) // Except )
   {
-  mData.showStatus( 
+  mData.showStatus(
       "Exception in ThreeScene constructor." );
   return;
   }
@@ -76,67 +69,67 @@ catch( Exception ) // Except )
 
 
 
+internal PerspectiveCamera getCamera()
+{
+return pCamera;
+}
+
+
+
+
+internal ModelVisual3D getMainModelVisual3D()
+{
+return mainModelVisual3D;
+}
+
+
+
+internal void setCameraTo( double X,
+                           double Y,
+                           double Z,
+                           double LookX,
+                           double LookY,
+                           double LookZ,
+                           double UpX,
+                           double UpY,
+                           double UpZ )
+{
+pCamera.Position = new Point3D( X, Y, Z );
+pCamera.LookDirection = new Vector3D(
+                         LookX, LookY, LookZ );
+pCamera.UpDirection = new Vector3D(
+                         UpX, UpY, UpZ );
+}
+
+
+
+
+internal void setCameraToOriginal()
+{
+pCamera.Position = new Point3D( 0, 15, 0 );
+pCamera.LookDirection = new Vector3D( 1, 0, 0 );
+pCamera.UpDirection = new Vector3D( 0, 0, 1 );
+}
+
+
+
+
+private void setupCamera()
+{
+// Positive Z values go toward the viewer.
+pCamera.FieldOfView = 60;
+// Clipping planes:
+// Too much of a range for clipping will cause
+// problems with the Depth buffer.
+
+pCamera.FarPlaneDistance = 10000;
+pCamera.NearPlaneDistance = 0.5;
+
+setCameraToOriginal();
+}
+
+
 /*
-  internal PerspectiveCamera GetCamera()
-    {
-    return PCamera;
-    }
-
-
-
-  internal ModelVisual3D GetMainModelVisual3D()
-    {
-    return MainModelVisual3D;
-    }
-
-
-
-  internal void SetCameraTo( double X,
-                             double Y,
-                             double Z,
-                             double LookX,
-                             double LookY,
-                             double LookZ,
-                             double UpX,
-                             double UpY,
-                             double UpZ )
-    {
-    PCamera.Position = new Point3D( X, Y, Z );
-    PCamera.LookDirection = new Vector3D( LookX, LookY, LookZ );
-    PCamera.UpDirection = new Vector3D( UpX, UpY, UpZ );
-    }
-
-
-
-  internal void SetCameraToOriginal()
-    {
-    PCamera.Position = new Point3D( 0, 15, 0 );
-    PCamera.LookDirection = new Vector3D( 1, 0, 0 );
-    // Up is toward the North Pole.
-    PCamera.UpDirection = new Vector3D( 0, 0, 1 );
-    }
-
-
-
-  private void SetupCamera()
-    {
-    // Positive Z values go toward the viewer.
-    PCamera.FieldOfView = 60;
-    // Clipping planes:
-    // Too much of a range for clipping will cause
-    // problems with the Depth buffer.
-    // Saturn is at about 1,498,032 thousand
-    // kilometers from Earth.  And 1,505,795 from
-    // the sun.  Twice the radius of Saturn's
-    // orbit: 1,600,000 * 2.
-    PCamera.FarPlaneDistance = 1600000 * 2;
-    PCamera.NearPlaneDistance = 0.5;
-
-    SetCameraToOriginal();
-    }
-
-
-
   internal void MoveForwardBack( double HowFar )
     {
     Vector3D LookAt = PCamera.LookDirection;
@@ -353,21 +346,11 @@ catch( Exception ) // Except )
 
 
 
-internal void MoveToDefaultView()
+internal void moveToDefaultView()
 {
-/*
-Vector3.Vector Pos =
-           SolarS.GetEarthScaledPosition();
-
-// Positive X direction is toward the sun
-// (from Earth)
-    // on the day of Spring Equinox.
-    // So LookAt direction of -X means from the
-    // sun toward the Earth on Spring Equinox.
-
-SetCameraTo( Pos.X,
-             Pos.Y,
-             Pos.Z,
+setCameraTo( 0, // X
+             0, // Y
+             0, // Z
              0,  // LookAt vector.
              1,
              0,
@@ -375,8 +358,6 @@ SetCameraTo( Pos.X,
              0,
              1 ); // Up is with Z = 1.
 
-MoveForwardBack( -30.0 );
-*/
 }
 
 
