@@ -72,7 +72,8 @@ private void setupGUI()
 {
 TopPanel = new System.Windows.Forms.Panel();
 ThreeDPanel = new System.Windows.Forms.Panel();
-focusTextBox = new System.Windows.Forms.TextBox();
+focusTextBox = new System.Windows.
+                            Forms.TextBox();
 
 ThreeDPanel.BackColor = Color.Black;
 
@@ -94,11 +95,7 @@ viewPort.Children.Add(
             scene.getMainModelVisual3D() );
 
 viewPort.Camera = scene.getCamera();
-/*
-scene.RefFrame.MakeNewGeometryModels();
-// =======
-// Scene.SolarS.MakeNewGeometryModels();
-*/
+scene.geomModel.makeNewGeometryModels();
 }
 
 
@@ -111,7 +108,8 @@ TopPanel.SuspendLayout();
 ThreeDPanel.SuspendLayout();
 this.SuspendLayout();
 
-TopPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+TopPanel.BorderStyle = System.Windows.
+                Forms.BorderStyle.FixedSingle;
 TopPanel.Controls.Add( focusTextBox );
 TopPanel.Dock = System.Windows.Forms.
                                 DockStyle.Top;
@@ -123,7 +121,7 @@ TopPanel.Size = new System.Drawing.
 TopPanel.TabIndex = 2;
 
 ThreeDPanel.BorderStyle = System.Windows.
-                  Forms.BorderStyle.FixedSingle;
+                Forms.BorderStyle.FixedSingle;
 ThreeDPanel.Controls.Add(
                    this.MainElementHost );
 ThreeDPanel.Dock = System.Windows.Forms.
@@ -144,7 +142,6 @@ MainElementHost.Size = new System.
                         Drawing.Size(615, 301);
 MainElementHost.TabIndex = 0;
 MainElementHost.Text = "elementHost1";
-// MainElementHost.Child = null;
 
 focusTextBox.Location = new System.
                          Drawing.Point(26, 14);
@@ -153,10 +150,8 @@ focusTextBox.Size = new System.Drawing.
                              Size( 50, 22 );
 focusTextBox.TabIndex = 0;
 
-// this.AutoScaleDimensions = new System.
-//                      Drawing.SizeF(8F, 16F);
 this.AutoScaleMode = System.Windows.Forms.
-                  AutoScaleMode.None; // Font;
+                  AutoScaleMode.None;
 this.ClientSize = new System.Drawing.
                               Size(617, 412);
 this.Controls.Add( this.ThreeDPanel );
@@ -174,6 +169,7 @@ this.Font = new System.Drawing.Font(
              System.Drawing.FontStyle.Regular,
              System.Drawing.GraphicsUnit.Pixel,
              ((byte)(0)));
+
 // this.FormClosing += new System.Windows.
 //         Forms.FormClosingEventHandler(
 //         this.MainForm_FormClosing );
@@ -186,14 +182,16 @@ this.PerformLayout();
 }
 
 
+
 internal void FreeEverything()
 {
 TopPanel.Dispose();
 ThreeDPanel.Dispose();
 MainElementHost.Dispose();
 focusTextBox.Dispose();
+
 // ViewPort.Dispose(); ??
-// Scene;
+// scene;
 }
 
 
@@ -219,174 +217,116 @@ try
 // Subtract The subtract key.
 // Tab The TAB key.
 
-double Angle = MathF.DegreesToRadians( 2 );
+double angle = MathF.DegreesToRadians( 2 );
 
-/*
 if( e.Control )
   {
-  if( e.KeyCode == Keys.T )
+  if( e.KeyCode == Keys.D )
     {
-    Scene.RotateView();
+    scene.moveToDefaultView();
+    return;
+    }
 
+  if( e.KeyCode == Keys.Left )
+    {
+    scene.rotateLeftRight( -angle );
+    return;
+    }
 
-  private void SetCameraTo( double X,
-                            double Y,
-                            double Z,
-                            double LookX,
-                            double LookY,
-                            double LookZ,
-                            double UpX,
-                            double UpY,
-                            double UpZ )
+  if( e.KeyCode == Keys.Right )
+    {
+    scene.rotateLeftRight( angle );
+    return;
+    }
+
+  if( e.KeyCode == Keys.PageUp )
+    {
+    scene.moveForwardBack( 1000.0 );
+    return;
+    }
+
+  if( e.KeyCode == Keys.PageDown )
+    {
+    scene.moveForwardBack( -1000.0 );
+    return;
+    }
 
   return;
   }
 
 
-if( e.KeyCode == Keys.S )
+if( e.Alt )
   {
-  Scene.DoTimeStep();
+  return;
+  }
 
 
+if( e.Shift )
+  {
+  if( e.KeyCode == Keys.Left )
+    {
+    scene.shiftLeftRight( -3.0 );
+    return;
+    }
 
-////////////
-  private void SetCameraTo( double X,
-                            double Y,
-                            double Z,
-                            double LookX,
-                            double LookY,
-                            double LookZ,
-                            double UpX,
-                            double UpY,
-                            double UpZ )
-//////////////
-        return;
-        }
+  if( e.KeyCode == Keys.Right )
+    {
+    scene.shiftLeftRight( 3.0 );
+    return;
+    }
 
-      if( e.KeyCode == Keys.E )
-        {
-        Scene.MoveToEarthView();
-        return;
-        }
+  if( e.KeyCode == Keys.Up )
+    {
+    scene.shiftUpDown( 3.0 );
+    return;
+    }
 
-      if( e.KeyCode == Keys.Z )
-        {
-        Scene.SetEarthPositionToZero();
-        Scene.MoveToEarthView();
-        return;
-        }
+  if( e.KeyCode == Keys.Down )
+    {
+    scene.shiftUpDown( -3.0 );
+    return;
+    }
 
-      if( e.KeyCode == Keys.J )
-        {
-        Scene.SolarS.AddMinutesToSunTime( 10 );
-        Scene.SolarS.SetJPLTimes();
-        Scene.MoveToEarthView();
-        return;
-        }
+  return;
+  }
 
+// if( e.KeyCode == Keys.Escape ) 
 
-      if( e.KeyCode == Keys.Left )
-        {
-        Scene.RotateLeftRight( -Angle );
-        }
+// if( e.KeyCode == Keys.F1 )
 
-      if( e.KeyCode == Keys.Right )
-        {
-        Scene.RotateLeftRight( Angle );
-        }
+if( e.KeyCode == Keys.PageUp )
+  {
+  scene.moveForwardBack( 2.0 );
+  }
 
-      if( e.KeyCode == Keys.PageUp )
-        {
-        Scene.MoveForwardBack( 1000.0 );
-        }
+if( e.KeyCode == Keys.PageDown )
+  {
+  scene.moveForwardBack( -2.0 );
+  }
 
-      if( e.KeyCode == Keys.PageDown )
-        {
-        Scene.MoveForwardBack( -1000.0 );
-        }
+if( e.KeyCode == Keys.Left )
+  {
+  // See the notes in ThreeDScene.cs and
+  // in QuaternionEC.cs about rotation
+  // directions and positive or negative
+  // rotation angles.
+  scene.moveLeftRight( angle );
+  }
 
-      return;
-      }
+if( e.KeyCode == Keys.Right )
+  {
+  scene.moveLeftRight( -angle );
+  }
 
+if( e.KeyCode == Keys.Up )
+  {
+  scene.moveUpDown( angle );
+  }
 
-    if( e.Alt )
-      {
-
-      return;
-      }
-
-
-    if( e.Shift )
-      {
-      if( e.KeyCode == Keys.Left )
-        {
-        Scene.ShiftLeftRight( -3.0 );
-        }
-
-      if( e.KeyCode == Keys.Right )
-        {
-        Scene.ShiftLeftRight( 3.0 );
-        }
-
-      if( e.KeyCode == Keys.Up )
-        {
-        Scene.ShiftUpDown( 3.0 );
-        }
-
-      if( e.KeyCode == Keys.Down )
-        {
-        Scene.ShiftUpDown( -3.0 );
-        }
-
-      return;
-      }
-
-    if( e.KeyCode == Keys.Escape ) //  && (e.Alt || e.Control || e.Shift))
-      {
-      // MessageBox.Show( "Escape.", MainForm.MessageBoxTitle, MessageBoxButtons.OK );
-      }
-
-    if( e.KeyCode == Keys.F1 )
-      {
-      MessageBox.Show( "Control E gets back to Earth. Z goes to barycenter. J is plus 10 minutes.", MainForm.MessageBoxTitle, MessageBoxButtons.OK );
-      return;
-      }
-
-    if( e.KeyCode == Keys.PageUp )
-      {
-      // MessageBox.Show( "Page up.", MainForm.MessageBoxTitle, MessageBoxButtons.OK );
-      Scene.MoveForwardBack( 2.0 );
-      }
-
-    if( e.KeyCode == Keys.PageDown )
-      {
-      Scene.MoveForwardBack( -2.0 );
-      }
-
-    if( e.KeyCode == Keys.Left )
-      {
-      // See the notes in ThreeDScene.cs and in QuaternionEC.cs
-      // about rotation directions and positive or negative
-      // rotation angles.
-      Scene.MoveLeftRight( Angle );
-      }
-
-    if( e.KeyCode == Keys.Right )
-      {
-      Scene.MoveLeftRight( -Angle );
-      }
-
-    if( e.KeyCode == Keys.Up )
-      {
-      Scene.MoveUpDown( Angle );
-      }
-
-    if( e.KeyCode == Keys.Down )
-      {
-      Scene.MoveUpDown( -Angle );
-      }
-*/
-
+if( e.KeyCode == Keys.Down )
+  {
+  scene.moveUpDown( -angle );
+  }
 }
 catch( Exception ) // Except )
   {

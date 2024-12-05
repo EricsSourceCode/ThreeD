@@ -32,7 +32,7 @@ private MainData mData;
 private PerspectiveCamera pCamera;
 private Model3DGroup main3DGroup;
 private ModelVisual3D mainModelVisual3D;
-internal GeomModel geomModel; // SolarSystem
+internal GeomModel geomModel; // Was SolarSystem
 
 
 
