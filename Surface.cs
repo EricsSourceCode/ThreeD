@@ -18,113 +18,96 @@ using System.Windows.Media.Imaging;
 
 
 
-namespace ClimateModel
+// namespace
+
+
+
+
+class Surface : SpaceObject
 {
-  class Sphere : SpaceObject
-  {
-  internal string TextureFileName = "";
-  internal double Radius = 1;
-  private MeshGeometry3D Surface;
-  private GeometryModel3D GeoMod;
-  private VertexRow[] VertexRows;
-  private int VertexRowsLast = 0;
-  private int LastVertexIndex = 0;
-  internal double LongitudeHoursRadians = 0; // Time change.
-  // internal bool Emmissive = false;
+internal string textureFileName = "";
+private MeshGeometry3D mesh;
+private GeometryModel3D geoMod;
+private VertexRow[] vertexRows;
+private int vertexRowsLast = 0;
+private int lastVertexIndex = 0;
 
 
 
-  public struct LatLongPosition
-    {
-    public int Index;
-    public double Latitude;
-    public double Longitude;
-    public double X;
-    public double Y;
-    public double Z;
-    public Vector3.Vector SurfaceNormal;
-    public double TextureX;
-    public double TextureY;
-    // public double Radius;
-    // public double Elevation;
-    }
+
+public struct VertexPos
+{
+public int Index;
+public double X;
+public double Y;
+public double Z;
+public Vector3.Vector surfaceNormal;
+public double textureX;
+public double textureY;
+}
 
 
 
-  public struct VertexRow
-    {
-    public LatLongPosition[] Row;
-    public int RowLast;
-    }
+public struct VertexRow
+{
+public VertexPos[] Row;
+public int RowLast;
+}
 
 
 
-  internal PlanetSphere( MainForm UseForm,
-                         string UseName,
-                         // bool IsEmmissive,
-                         string JPLFileName
-                      ): base( UseForm,
-                               UseName,
-                               JPLFileName )
-    {
-    // Emmissive = IsEmmissive;
+internal Surface( MainData useMainData,
+                  string useName ):
+                  base( useMainData, useName )
+{
+// Emmissive = IsEmmissive;
 
-    GeoMod = new GeometryModel3D();
-    }
+geoMod = new GeometryModel3D();
+}
 
 
 
-  internal override GeometryModel3D GetGeometryModel()
-    {
-    return GeoMod;
-    }
+internal override GeometryModel3D
+                         getGeometryModel()
+{
+return geoMod;
+}
 
 
 
-  internal override void MakeNewGeometryModel()
-    {
-    try
-    {
+internal override void makeNewGeoModel()
+{
+try
+{
+DiffuseMaterial solidMat = new DiffuseMaterial();
+// SolidMat.Brush = Brushes.Blue;
+
 /*
-    if( Emmissive )
-      {
-      EmissiveMaterial SolidMatE = new EmissiveMaterial();
-      SolidMatE.Brush = SetTextureImageBrush();
-      GeoMod.Material = SolidMatE;
-      }
-    else
-      { */
-      DiffuseMaterial SolidMat = new DiffuseMaterial();
-      // SolidMat.Brush = Brushes.Blue;
-      SolidMat.Brush = SetTextureImageBrush();
-      GeoMod.Material = SolidMat;
-      // }
+solidMat.Brush = setTextureImageBrush();
+geoMod.Material = solidMat;
 
-     MakeSphericalModel();
+MakeSphericalModel();
 
-    // if( Surface == null )
-
-    GeoMod.Geometry = Surface;
-    }
-    catch( Exception Except )
-      {
-      ShowStatus( "Exception in PlanetSphere.MakeNewGeometryModel(): " + Except.Message );
-      }
-    }
+*/
+geoMod.Geometry = mesh;
+}
+catch( Exception ) // Except )
+  {
+  mData.showStatus(
+       "Exception Surface.makeNewGeoModel()." );
+  }
+}
 
 
+/*
+private ImageBrush setTextureImageBrush()
+{
+BitmapImage BMapImage = new BitmapImage();
 
-  private ImageBrush SetTextureImageBrush()
-    {
-    // ImageDrawing:
-    // https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imagedrawing?view=netframework-4.7.1
+// Things have to be in this Begin-end block.
+BMapImage.BeginInit();
 
-    BitmapImage BMapImage = new BitmapImage();
-
-    // Things have to be in this Begin-end block.
-    BMapImage.BeginInit();
-
-    BMapImage.UriSource = new Uri( TextureFileName );
+BMapImage.UriSource = new Uri( TextureFileName );
 
     // BMapImage.DecodePixelWidth = 200;
 
@@ -136,9 +119,11 @@ namespace ClimateModel
     ImgBrush.ImageSource = BMapImage;
     return ImgBrush;
     }
+*/
 
 
 
+/*
   internal void SetLatLonPositionXYZ(
                       ref LatLongPosition Result,
                       double CosLatRadians,
@@ -172,9 +157,10 @@ namespace ClimateModel
     Result.TextureY = Result.TextureY * ( 1.0d / 180.0d );
     Result.TextureY = 1 - Result.TextureY;
     }
+*/
 
 
-
+/*
   private void AddSurfaceVertex( LatLongPosition Pos )
     {
     // Surface.Positions.Count
@@ -210,9 +196,10 @@ namespace ClimateModel
     Vector3D SurfaceNormal = new Vector3D( Pos.SurfaceNormal.X, Pos.SurfaceNormal.Y, Pos.SurfaceNormal.Z );
     Surface.Normals.Add( SurfaceNormal );
     }
+*/
 
 
-
+/*
   private void AddSurfaceTriangleIndex( int Index1,
                                         int Index2,
                                         int Index3 )
@@ -221,21 +208,23 @@ namespace ClimateModel
     Surface.TriangleIndices.Add( Index2 );
     Surface.TriangleIndices.Add( Index3 );
     }
+*/
 
 
 
-  private void MakeSphericalModel()
-    {
-    try
-    {
-    Surface = new MeshGeometry3D();
+private void makeModel()
+{
+try
+{
+mesh = new MeshGeometry3D();
 
-    LastVertexIndex = 0;
-    VertexRowsLast = 20 - 1;
-    int VertexRowsMiddle = 9;
+lastVertexIndex = 0;
+vertexRowsLast = 20 - 1;
+int vertexRowsMiddle = 9;
 
-    VertexRows = new VertexRow[VertexRowsLast];
+vertexRows = new VertexRow[vertexRowsLast];
 
+/*
     LatLongPosition PosNorthPole = new LatLongPosition();
     PosNorthPole.Latitude = 90.0;
     PosNorthPole.Longitude = 0;
@@ -324,15 +313,17 @@ namespace ClimateModel
       }
 
     FreeVertexRows();
-    }
-    catch( Exception Except )
-      {
-      ShowStatus( "Exception in PlanetSphere.MakeSphericalModel(): " + Except.Message );
-      }
-    }
+*/
+}
+catch( Exception ) // Except )
+  {
+  mData.showStatus(
+          "Exception in Surface.makeModel()" );
+  }
+}
 
 
-
+/*
   private void MakePoleTriangles()
     {
     try
@@ -388,9 +379,11 @@ namespace ClimateModel
       ShowStatus( "Exception in PlanetSphere.MakePoleTriangles(): " + Except.Message );
       }
     }
+*/
 
 
 
+/*
   private bool MakeRowTriangles( int FirstRow, int SecondRow )
     {
     try
@@ -432,9 +425,11 @@ namespace ClimateModel
       return false;
       }
     }
+*/
 
 
 
+/*
   private bool MakeDoubleRowTriangles( int FirstRow, int DoubleRow )
     {
     try
@@ -495,9 +490,11 @@ namespace ClimateModel
       return false;
       }
     }
+*/
 
 
 
+/*
   private bool MakeDoubleReverseRowTriangles( int BottomRow, int DoubleRow )
     {
     try
@@ -559,9 +556,10 @@ namespace ClimateModel
       return false;
       }
     }
+*/
 
 
-
+/*
   private void FreeVertexRows()
     {
     for( int Count = 0; Count < VertexRowsLast; Count++ )
@@ -571,9 +569,11 @@ namespace ClimateModel
 
     VertexRows = null;
     }
+*/
 
 
 
+/*
   private bool MakeOneVertexRow( int RowIndex,
                                  int HowMany,
                                  double Latitude )
@@ -629,8 +629,8 @@ namespace ClimateModel
       return false;
       }
     }
+*/
 
 
 
-  }
-}
+} // Class

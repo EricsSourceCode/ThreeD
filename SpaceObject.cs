@@ -10,7 +10,7 @@
 
 
 
-// This is any object in 3D space.  
+// This is any object in 3D space.
 
 
 
@@ -51,9 +51,9 @@ objectName = useName;
 
 
 
-abstract internal void makeNewGeometryModel();
+abstract internal void makeNewGeoModel();
 
-abstract internal GeometryModel3D 
+abstract internal GeometryModel3D
                          getGeometryModel();
 
 
@@ -62,4 +62,3 @@ abstract internal GeometryModel3D
 
 
 } // Class
-

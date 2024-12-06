@@ -32,8 +32,7 @@ private MainData mData;
 private PerspectiveCamera pCamera;
 private Model3DGroup main3DGroup;
 private ModelVisual3D mainModelVisual3D;
-internal GeomModel geomModel; // Was SolarSystem
-
+internal GeomModel geomModel;
 
 
 
@@ -106,9 +105,9 @@ pCamera.UpDirection = new Vector3D(
 
 internal void setCameraToOriginal()
 {
-pCamera.Position = new Point3D( 0, 15, 0 );
-pCamera.LookDirection = new Vector3D( 1, 0, 0 );
-pCamera.UpDirection = new Vector3D( 0, 0, 1 );
+pCamera.Position = new Point3D( 0, 0, 15 );
+pCamera.LookDirection = new Vector3D( 0, 0, -1 );
+pCamera.UpDirection = new Vector3D( 0, 1, 0 );
 }
 
 
@@ -129,40 +128,39 @@ setCameraToOriginal();
 }
 
 
-/*
-  internal void MoveForwardBack( double HowFar )
-    {
-    Vector3D LookAt = PCamera.LookDirection;
-    Point3D Position = PCamera.Position;
-    Vector3D MoveBy = new Vector3D();
-    MoveBy = Vector3D.Multiply( HowFar, LookAt );
-    Point3D MoveTo = new Point3D();
-    MoveTo = Point3D.Add( Position, MoveBy );
-    PCamera.Position = MoveTo;
-    }
+internal void moveForwardBack( double HowFar )
+{
+Vector3D lookAt = pCamera.LookDirection;
+Point3D position = pCamera.Position;
+Vector3D moveBy = new Vector3D();
+moveBy = Vector3D.multiply( howFar, lookAt );
+Point3D moveTo = new Point3D();
+moveTo = Point3D.Add( position, moveBy );
+PCamera.Position = moveTo;
+}
 
 
 
-  internal void MoveLeftRight( double Angle )
-    {
-    Vector3D LookDirection = PCamera.LookDirection;
-    Vector3D UpDirection = PCamera.UpDirection;
+internal void moveLeftRight( double angle )
+{
+Vector3D lookDirection = pCamera.LookDirection;
+Vector3D upDirection = pCamera.UpDirection;
 
-    QuaternionEC.QuaternionRec Axis;
-    Axis.X = UpDirection.X;
-    Axis.Y = UpDirection.Y;
-    Axis.Z = UpDirection.Z;
-    Axis.W = 0;
+QuaternionEC.QuaternionRec axis;
+axis.X = upDirection.X;
+axis.Y = upDirection.Y;
+axis.Z = upDirection.Z;
+axis.W = 0;
 
-    QuaternionEC.QuaternionRec StartPoint;
-    StartPoint.X = LookDirection.X;
-    StartPoint.Y = LookDirection.Y;
-    StartPoint.Z = LookDirection.Z;
-    StartPoint.W = 0;
+QuaternionEC.QuaternionRec startPoint;
+startPoint.X = lookDirection.X;
+startPoint.Y = lookDirection.Y;
+startPoint.Z = lookDirection.Z;
+startPoint.W = 0;
 
-    QuaternionEC.QuaternionRec RotationQ =
-                   QuaternionEC.SetAsRotation( Axis,
-                                               Angle );
+QuaternionEC.QuaternionRec rotationQ =
+          QuaternionEC.setAsRotation( axis,
+                                      angle );
 
     QuaternionEC.QuaternionRec InverseRotationQ =
                     QuaternionEC.Inverse( RotationQ );

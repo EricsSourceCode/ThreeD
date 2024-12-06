@@ -76,17 +76,17 @@ makeNewGeometryModels();
 }
 catch( Exception ) // Except )
   {
-  mData.showStatus( 
+  mData.showStatus(
      "Exception in GeomModel.setupObjects()." );
   }
 }
 
 
 
-internal void addSpaceObject( 
+internal void addSpaceObject(
                         SpaceObject toAdd )
 {
-====
+/*
 spaceObjAr[spaceObjArrayLast] = ToAdd;
 spaceObjLast++;
 
@@ -96,6 +96,7 @@ if( spaceObjLast >= length )
   {
   Array.Resize( ref spaceObjAr, length + 16 );
   }
+*/
 }
 
 
@@ -103,6 +104,7 @@ if( spaceObjLast >= length )
 
 internal void makeNewGeometryModels()
 {
+/*
 main3DGroup.Children.Clear();
 
 int last = spaceObjLast;
@@ -120,6 +122,7 @@ for( int count = 0; count < last; count++ )
 
 setupAmbientLight();
 setupMainLight();
+*/
 }
 
 

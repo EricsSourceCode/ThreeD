@@ -290,7 +290,7 @@ if( e.Shift )
   return;
   }
 
-// if( e.KeyCode == Keys.Escape ) 
+// if( e.KeyCode == Keys.Escape )
 
 // if( e.KeyCode == Keys.F1 )
 
