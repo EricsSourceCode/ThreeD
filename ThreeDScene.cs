@@ -43,16 +43,19 @@ private ThreeDScene()
 
 
 
-internal ThreeDScene( MainData useMainData )
+internal ThreeDScene( MainData useMainData,
+                Model3DGroup useMain3DGroup,
+                GeomModel useGeomModel )
 {
 mData = useMainData;
 
 try
 {
 pCamera = new PerspectiveCamera();
-main3DGroup = new Model3DGroup();
 mainModelVisual3D = new ModelVisual3D();
-geomModel = new GeomModel( mData, main3DGroup );
+
+main3DGroup = useMain3DGroup;
+geomModel = useGeomModel;
 
 setupCamera();
 mainModelVisual3D.Content = main3DGroup;
@@ -128,15 +131,15 @@ setCameraToOriginal();
 }
 
 
-internal void moveForwardBack( double HowFar )
+internal void moveForwardBack( double howFar )
 {
 Vector3D lookAt = pCamera.LookDirection;
 Point3D position = pCamera.Position;
 Vector3D moveBy = new Vector3D();
-moveBy = Vector3D.multiply( howFar, lookAt );
+moveBy = Vector3D.Multiply( howFar, lookAt );
 Point3D moveTo = new Point3D();
 moveTo = Point3D.Add( position, moveBy );
-PCamera.Position = moveTo;
+pCamera.Position = moveTo;
 }
 
 
@@ -146,201 +149,190 @@ internal void moveLeftRight( double angle )
 Vector3D lookDirection = pCamera.LookDirection;
 Vector3D upDirection = pCamera.UpDirection;
 
-QuaternionEC.QuaternionRec axis;
+Quatern.QuaternRec axis;
 axis.X = upDirection.X;
 axis.Y = upDirection.Y;
 axis.Z = upDirection.Z;
 axis.W = 0;
 
-QuaternionEC.QuaternionRec startPoint;
+Quatern.QuaternRec startPoint;
 startPoint.X = lookDirection.X;
 startPoint.Y = lookDirection.Y;
 startPoint.Z = lookDirection.Z;
 startPoint.W = 0;
 
-QuaternionEC.QuaternionRec rotationQ =
-          QuaternionEC.setAsRotation( axis,
-                                      angle );
+Quatern.QuaternRec rotationQ =
+                 Quatern.setAsRotation(
+                                axis, angle );
 
-    QuaternionEC.QuaternionRec InverseRotationQ =
-                    QuaternionEC.Inverse( RotationQ );
+Quatern.QuaternRec inverseRotationQ =
+                  Quatern.inverse( rotationQ );
 
-    QuaternionEC.QuaternionRec ResultPoint =
-                  QuaternionEC.Rotate( RotationQ,
-                                       InverseRotationQ,
-                                       StartPoint );
+Quatern.QuaternRec resultPoint =
+             Quatern.rotate( rotationQ,
+                             inverseRotationQ,
+                             startPoint );
 
-    LookDirection.X = ResultPoint.X;
-    LookDirection.Y = ResultPoint.Y;
-    LookDirection.Z = ResultPoint.Z;
-    PCamera.LookDirection = LookDirection;
-    }
-
-
-
-  // For Yaw, Pitch and Roll, this is Roll.
-  internal void RotateLeftRight( double Angle )
-    {
-    Vector3D LookDirection = PCamera.LookDirection;
-    Vector3D UpDirection = PCamera.UpDirection;
-
-    QuaternionEC.QuaternionRec Axis;
-    Axis.X = LookDirection.X;
-    Axis.Y = LookDirection.Y;
-    Axis.Z = LookDirection.Z;
-    Axis.W = 0;
-
-    Vector3.Vector Up;
-    Up.X = UpDirection.X;
-    Up.Y = UpDirection.Y;
-    Up.Z = UpDirection.Z;
-
-    QuaternionEC.QuaternionRec RotationQ =
-                QuaternionEC.SetAsRotation( Axis,
-                                            Angle );
-
-    QuaternionEC.QuaternionRec InverseRotationQ =
-                   QuaternionEC.Inverse( RotationQ );
-
-    Vector3.Vector ResultPoint =
-          QuaternionEC.RotateVector3( RotationQ,
-                                      InverseRotationQ,
-                                      Up );
-
-    UpDirection.X = ResultPoint.X;
-    UpDirection.Y = ResultPoint.Y;
-    UpDirection.Z = ResultPoint.Z;
-    PCamera.UpDirection = UpDirection;
-    }
+lookDirection.X = resultPoint.X;
+lookDirection.Y = resultPoint.Y;
+lookDirection.Z = resultPoint.Z;
+pCamera.LookDirection = lookDirection;
+}
 
 
 
-  internal void MoveUpDown( double Angle )
-    {
-    Vector3D LookDirection = PCamera.LookDirection;
-    Vector3D UpDirection = PCamera.UpDirection;
+// For Yaw, Pitch and Roll, this is Roll.
 
-    QuaternionEC.QuaternionRec Look;
-    Look.X = LookDirection.X;
-    Look.Y = LookDirection.Y;
-    Look.Z = LookDirection.Z;
-    Look.W = 0;
+internal void rotateLeftRight( double angle )
+{
+Vector3D lookDirection = pCamera.LookDirection;
+Vector3D upDirection = pCamera.UpDirection;
 
-    QuaternionEC.QuaternionRec Up;
-    Up.X = UpDirection.X;
-    Up.Y = UpDirection.Y;
-    Up.Z = UpDirection.Z;
-    Up.W = 0;
+Quatern.QuaternRec axis;
+axis.X = lookDirection.X;
+axis.Y = lookDirection.Y;
+axis.Z = lookDirection.Z;
+axis.W = 0;
 
-    // X Cross Y = Z.  The Right-hand rule.
+Vector3.Vect up;
+up.X = upDirection.X;
+up.Y = upDirection.Y;
+up.Z = upDirection.Z;
 
-    QuaternionEC.QuaternionRec Cross =
-                QuaternionEC.CrossProduct( Look, Up );
+Quatern.QuaternRec rotationQ =
+                Quatern.setAsRotation(
+                              axis, angle );
 
-    QuaternionEC.QuaternionRec RotationQ =
-           QuaternionEC.SetAsRotation( Cross, Angle );
+Quatern.QuaternRec inverseRotationQ =
+                Quatern.inverse( rotationQ );
 
-    QuaternionEC.QuaternionRec InverseRotationQ =
-                    QuaternionEC.Inverse( RotationQ );
+Vector3.Vect resultPoint =
+                  Quatern.rotateVector3(
+                             rotationQ,
+                             inverseRotationQ,
+                             up );
 
-    /////////////////
-    // Rotate Up around Cross.
-    QuaternionEC.QuaternionRec StartPoint;
-    StartPoint.X = Up.X;
-    StartPoint.Y = Up.Y;
-    StartPoint.Z = Up.Z;
-    StartPoint.W = 0;
-
-    QuaternionEC.QuaternionRec ResultPoint =
-              QuaternionEC.Rotate( RotationQ,
-                                   InverseRotationQ,
-                                   StartPoint );
-
-    UpDirection.X = ResultPoint.X;
-    UpDirection.Y = ResultPoint.Y;
-    UpDirection.Z = ResultPoint.Z;
-    PCamera.UpDirection = UpDirection;
-
-    /////////////////
-    // Rotate Look around Cross.
-    StartPoint.X = Look.X;
-    StartPoint.Y = Look.Y;
-    StartPoint.Z = Look.Z;
-    StartPoint.W = 0;
-
-    ResultPoint = QuaternionEC.Rotate( RotationQ,
-                                       InverseRotationQ,
-                                       StartPoint );
-
-    LookDirection.X = ResultPoint.X;
-    LookDirection.Y = ResultPoint.Y;
-    LookDirection.Z = ResultPoint.Z;
-    PCamera.LookDirection = LookDirection;
-    }
+upDirection.X = resultPoint.X;
+upDirection.Y = resultPoint.Y;
+upDirection.Z = resultPoint.Z;
+pCamera.UpDirection = upDirection;
+}
 
 
 
-  internal void ShiftLeftRight( double HowFar )
-    {
-    Vector3D LookDirection = PCamera.LookDirection;
-    Vector3D UpDirection = PCamera.UpDirection;
+internal void moveUpDown( double angle )
+{
+Vector3D lookDirection = pCamera.LookDirection;
+Vector3D upDirection = pCamera.UpDirection;
 
-    QuaternionEC.QuaternionRec Look;
-    Look.X = LookDirection.X;
-    Look.Y = LookDirection.Y;
-    Look.Z = LookDirection.Z;
-    Look.W = 0;
+Quatern.QuaternRec look;
+look.X = lookDirection.X;
+look.Y = lookDirection.Y;
+look.Z = lookDirection.Z;
+look.W = 0;
 
-    QuaternionEC.QuaternionRec Up;
-    Up.X = UpDirection.X;
-    Up.Y = UpDirection.Y;
-    Up.Z = UpDirection.Z;
-    Up.W = 0;
+Quatern.QuaternRec up;
+up.X = upDirection.X;
+up.Y = upDirection.Y;
+up.Z = upDirection.Z;
+up.W = 0;
 
-    QuaternionEC.QuaternionRec Cross =
-                QuaternionEC.CrossProduct( Look, Up );
+// X Cross Y = Z.  The Right-hand rule.
 
-    Vector3D CrossVect = new Vector3D();
-    CrossVect.X = Cross.X;
-    CrossVect.Y = Cross.Y;
-    CrossVect.Z = Cross.Z;
+Quatern.QuaternRec cross =
+           Quatern.crossProduct( look, up );
 
-    Point3D Position = PCamera.Position;
+Quatern.QuaternRec rotationQ =
+         Quatern.setAsRotation( cross, angle );
 
-    Vector3D MoveBy = Vector3D.Multiply( HowFar, CrossVect );
-    Point3D MoveTo = Point3D.Add( Position, MoveBy );
-    PCamera.Position = MoveTo;
-    }
+Quatern.QuaternRec inverseRotationQ =
+                Quatern.inverse( rotationQ );
+
+// Rotate Up around Cross.
+Quatern.QuaternRec startPoint;
+startPoint.X = up.X;
+startPoint.Y = up.Y;
+startPoint.Z = up.Z;
+startPoint.W = 0;
+
+Quatern.QuaternRec resultPoint =
+            Quatern.rotate( rotationQ,
+                            inverseRotationQ,
+                            startPoint );
+
+upDirection.X = resultPoint.X;
+upDirection.Y = resultPoint.Y;
+upDirection.Z = resultPoint.Z;
+pCamera.UpDirection = upDirection;
+
+// Rotate Look around Cross.
+startPoint.X = look.X;
+startPoint.Y = look.Y;
+startPoint.Z = look.Z;
+startPoint.W = 0;
+
+resultPoint = Quatern.rotate(
+                          rotationQ,
+                          inverseRotationQ,
+                          startPoint );
+
+lookDirection.X = resultPoint.X;
+lookDirection.Y = resultPoint.Y;
+lookDirection.Z = resultPoint.Z;
+pCamera.LookDirection = lookDirection;
+}
 
 
 
-  internal void ShiftUpDown( double HowFar )
-    {
-    Vector3D UpDirection = PCamera.UpDirection;
+internal void shiftLeftRight( double howFar )
+{
+Vector3D lookDirection = pCamera.LookDirection;
+Vector3D upDirection = pCamera.UpDirection;
 
-    Point3D Position = PCamera.Position;
-    Vector3D MoveBy = new Vector3D();
-    Point3D MoveTo = new Point3D();
+Quatern.QuaternRec look;
+look.X = lookDirection.X;
+look.Y = lookDirection.Y;
+look.Z = lookDirection.Z;
+look.W = 0;
 
-    MoveBy = Vector3D.Multiply( HowFar, UpDirection );
-    MoveTo = Point3D.Add( Position, MoveBy );
-    PCamera.Position = MoveTo;
-    }
+Quatern.QuaternRec up;
+up.X = upDirection.X;
+up.Y = upDirection.Y;
+up.Z = upDirection.Z;
+up.W = 0;
+
+Quatern.QuaternRec cross =
+            Quatern.crossProduct( look, up );
+
+Vector3D crossVect = new Vector3D();
+crossVect.X = cross.X;
+crossVect.Y = cross.Y;
+crossVect.Z = cross.Z;
+
+Point3D position = pCamera.Position;
+
+Vector3D moveBy = Vector3D.Multiply(
+                         howFar, crossVect );
+Point3D moveTo = Point3D.Add( position, moveBy );
+pCamera.Position = moveTo;
+}
 
 
 
-  internal void RotateView()
-    {
-    SolarS.RotateView();
-    }
+internal void shiftUpDown( double howFar )
+{
+Vector3D upDirection = pCamera.UpDirection;
 
+Point3D position = pCamera.Position;
+Vector3D moveBy = new Vector3D();
+Point3D moveTo = new Point3D();
 
+moveBy = Vector3D.Multiply( howFar,
+                            upDirection );
+moveTo = Point3D.Add( position, moveBy );
+pCamera.Position = moveTo;
+}
 
-  internal void DoTimeStep()
-    {
-    SolarS.DoTimeStep();
-    }
-*/
 
 
 
@@ -358,15 +350,6 @@ setCameraTo( 0, // X
 
 }
 
-
-
-/*
-internal void SetEarthPositionToZero()
-{
-SolarS.SetEarthPositionToZero();
-}
-
-*/
 
 
 } // Class

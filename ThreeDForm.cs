@@ -24,6 +24,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Forms.Integration;
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
+// using System.Windows.Media.Imaging;
 
 
 
@@ -49,13 +52,16 @@ private ThreeDForm()
 
 
 
-internal ThreeDForm( MainData useMainData )
+internal ThreeDForm( MainData useMainData,
+                Model3DGroup useMain3DGroup,
+                GeomModel useGeomModel )
 {
 mData = useMainData;
 
 try
 {
-setupGUI();
+setupGUI(useMain3DGroup,
+         useGeomModel );
 
 }
 catch( Exception ) // Except )
@@ -68,14 +74,17 @@ catch( Exception ) // Except )
 
 
 
-private void setupGUI()
+private void setupGUI(
+                Model3DGroup useMain3DGroup,
+                GeomModel useGeomModel )
 {
 TopPanel = new System.Windows.Forms.Panel();
 ThreeDPanel = new System.Windows.Forms.Panel();
 focusTextBox = new System.Windows.
                             Forms.TextBox();
 
-ThreeDPanel.BackColor = Color.Black;
+ThreeDPanel.BackColor = 
+                   System.Drawing.Color.Black;
 
 MainElementHost = new System.Windows.Forms.
                       Integration.ElementHost();
@@ -87,7 +96,10 @@ viewPort = new Viewport3D();
 
 initGuiComponents();
 
-scene = new ThreeDScene( mData );
+scene = new ThreeDScene( mData, 
+                         useMain3DGroup,
+                         useGeomModel );
+
 MainElementHost.Child = viewPort;
 
 viewPort.Children.Clear();
@@ -217,7 +229,7 @@ try
 // Subtract The subtract key.
 // Tab The TAB key.
 
-double angle = MathF.DegreesToRadians( 2 );
+double angle = MathF.degreesToRadians( 2 );
 
 if( e.Control )
   {

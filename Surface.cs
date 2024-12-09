@@ -1,3 +1,6 @@
+/*
+
+
 // Copyright Eric Chauvin 2018 - 2024.
 
 
@@ -25,12 +28,12 @@ using System.Windows.Media.Imaging;
 
 class Surface : SpaceObject
 {
-internal string textureFileName = "";
-private MeshGeometry3D mesh;
+// internal string textureFileName = "";
+// private MeshGeometry3D mesh;
 private GeometryModel3D geoMod;
-private VertexRow[] vertexRows;
-private int vertexRowsLast = 0;
-private int lastVertexIndex = 0;
+// private VertexRow[] vertexRows;
+// private int vertexRowsLast = 0;
+// private int lastVertexIndex = 0;
 
 
 
@@ -41,7 +44,7 @@ public int Index;
 public double X;
 public double Y;
 public double Z;
-public Vector3.Vector surfaceNormal;
+public Vector3.Vect surfaceNormal;
 public double textureX;
 public double textureY;
 }
@@ -56,13 +59,14 @@ public int RowLast;
 
 
 
+
 internal Surface( MainData useMainData,
                   string useName ):
                   base( useMainData, useName )
 {
 // Emmissive = IsEmmissive;
 
-geoMod = new GeometryModel3D();
+// geoMod = new GeometryModel3D();
 }
 
 
@@ -82,14 +86,13 @@ try
 DiffuseMaterial solidMat = new DiffuseMaterial();
 // SolidMat.Brush = Brushes.Blue;
 
-/*
 solidMat.Brush = setTextureImageBrush();
 geoMod.Material = solidMat;
 
 MakeSphericalModel();
 
-*/
 geoMod.Geometry = mesh;
+
 }
 catch( Exception ) // Except )
   {
@@ -99,7 +102,7 @@ catch( Exception ) // Except )
 }
 
 
-/*
+
 private ImageBrush setTextureImageBrush()
 {
 BitmapImage BMapImage = new BitmapImage();
@@ -119,11 +122,11 @@ BMapImage.UriSource = new Uri( TextureFileName );
     ImgBrush.ImageSource = BMapImage;
     return ImgBrush;
     }
-*/
 
 
 
-/*
+
+
   internal void SetLatLonPositionXYZ(
                       ref LatLongPosition Result,
                       double CosLatRadians,
@@ -157,11 +160,12 @@ BMapImage.UriSource = new Uri( TextureFileName );
     Result.TextureY = Result.TextureY * ( 1.0d / 180.0d );
     Result.TextureY = 1 - Result.TextureY;
     }
-*/
 
 
-/*
-  private void AddSurfaceVertex( LatLongPosition Pos )
+
+
+  private void AddSurfaceVertex( 
+               LatLongPosition Pos )
     {
     // Surface.Positions.Count
     // Surface.Positions.Items[Index];
@@ -196,10 +200,10 @@ BMapImage.UriSource = new Uri( TextureFileName );
     Vector3D SurfaceNormal = new Vector3D( Pos.SurfaceNormal.X, Pos.SurfaceNormal.Y, Pos.SurfaceNormal.Z );
     Surface.Normals.Add( SurfaceNormal );
     }
-*/
 
 
-/*
+
+
   private void AddSurfaceTriangleIndex( int Index1,
                                         int Index2,
                                         int Index3 )
@@ -208,7 +212,7 @@ BMapImage.UriSource = new Uri( TextureFileName );
     Surface.TriangleIndices.Add( Index2 );
     Surface.TriangleIndices.Add( Index3 );
     }
-*/
+
 
 
 
@@ -216,6 +220,7 @@ private void makeModel()
 {
 try
 {
+/*
 mesh = new MeshGeometry3D();
 
 lastVertexIndex = 0;
@@ -224,7 +229,6 @@ int vertexRowsMiddle = 9;
 
 vertexRows = new VertexRow[vertexRowsLast];
 
-/*
     LatLongPosition PosNorthPole = new LatLongPosition();
     PosNorthPole.Latitude = 90.0;
     PosNorthPole.Longitude = 0;
@@ -313,7 +317,7 @@ vertexRows = new VertexRow[vertexRowsLast];
       }
 
     FreeVertexRows();
-*/
+
 }
 catch( Exception ) // Except )
   {
@@ -323,7 +327,7 @@ catch( Exception ) // Except )
 }
 
 
-/*
+
   private void MakePoleTriangles()
     {
     try
@@ -379,11 +383,11 @@ catch( Exception ) // Except )
       ShowStatus( "Exception in PlanetSphere.MakePoleTriangles(): " + Except.Message );
       }
     }
-*/
 
 
 
-/*
+
+
   private bool MakeRowTriangles( int FirstRow, int SecondRow )
     {
     try
@@ -425,11 +429,10 @@ catch( Exception ) // Except )
       return false;
       }
     }
-*/
 
 
 
-/*
+
   private bool MakeDoubleRowTriangles( int FirstRow, int DoubleRow )
     {
     try
@@ -490,11 +493,11 @@ catch( Exception ) // Except )
       return false;
       }
     }
-*/
 
 
 
-/*
+
+
   private bool MakeDoubleReverseRowTriangles( int BottomRow, int DoubleRow )
     {
     try
@@ -556,10 +559,10 @@ catch( Exception ) // Except )
       return false;
       }
     }
-*/
 
 
-/*
+
+
   private void FreeVertexRows()
     {
     for( int Count = 0; Count < VertexRowsLast; Count++ )
@@ -569,11 +572,10 @@ catch( Exception ) // Except )
 
     VertexRows = null;
     }
-*/
 
 
 
-/*
+
   private bool MakeOneVertexRow( int RowIndex,
                                  int HowMany,
                                  double Latitude )
@@ -629,8 +631,10 @@ catch( Exception ) // Except )
       return false;
       }
     }
-*/
+
 
 
 
 } // Class
+
+*/

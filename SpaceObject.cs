@@ -28,7 +28,7 @@ abstract class SpaceObject
 {
 protected MainData mData;
 internal string objectName = "";
-internal Vector3.Vector position;
+// internal Vector3.Vect position;
 
 // internal Vector3.Vector Velocity;
 // internal Vector3.Vector Acceleration;
