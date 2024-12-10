@@ -24,13 +24,14 @@ using System.Text;
 using System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Forms.Integration;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
-// using System.Windows.Media.Imaging;
 
 
 
 // namespace
+
+
+// This is a generic 3D form to be used
+// in any program.
 
 
 
@@ -52,16 +53,13 @@ private ThreeDForm()
 
 
 
-internal ThreeDForm( MainData useMainData,
-                Model3DGroup useMain3DGroup,
-                GeomModel useGeomModel )
+internal ThreeDForm( MainData useMainData )
 {
 mData = useMainData;
 
 try
 {
-setupGUI(useMain3DGroup,
-         useGeomModel );
+setupGUI();
 
 }
 catch( Exception ) // Except )
@@ -74,16 +72,14 @@ catch( Exception ) // Except )
 
 
 
-private void setupGUI(
-                Model3DGroup useMain3DGroup,
-                GeomModel useGeomModel )
+private void setupGUI()
 {
 TopPanel = new System.Windows.Forms.Panel();
 ThreeDPanel = new System.Windows.Forms.Panel();
 focusTextBox = new System.Windows.
                             Forms.TextBox();
 
-ThreeDPanel.BackColor = 
+ThreeDPanel.BackColor =
                    System.Drawing.Color.Black;
 
 MainElementHost = new System.Windows.Forms.
@@ -96,9 +92,7 @@ viewPort = new Viewport3D();
 
 initGuiComponents();
 
-scene = new ThreeDScene( mData, 
-                         useMain3DGroup,
-                         useGeomModel );
+scene = mData.getScene();
 
 MainElementHost.Child = viewPort;
 
@@ -319,7 +313,7 @@ if( e.KeyCode == Keys.PageDown )
 if( e.KeyCode == Keys.Left )
   {
   // See the notes in ThreeDScene.cs and
-  // in QuaternionEC.cs about rotation
+  // in Quatern.cs about rotation
   // directions and positive or negative
   // rotation angles.
   scene.moveLeftRight( angle );

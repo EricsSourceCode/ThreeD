@@ -1,6 +1,3 @@
-/*
-
-
 // Copyright Eric Chauvin 2018 - 2024.
 
 
@@ -29,18 +26,18 @@ using System.Windows.Media.Imaging;
 class Surface : SpaceObject
 {
 // internal string textureFileName = "";
-// private MeshGeometry3D mesh;
-private GeometryModel3D geoMod;
+private MeshGeometry3D mesh;
+private GeometryModel3D geomMod;
 // private VertexRow[] vertexRows;
 // private int vertexRowsLast = 0;
 // private int lastVertexIndex = 0;
 
 
 
-
+/*
 public struct VertexPos
 {
-public int Index;
+public int index;
 public double X;
 public double Y;
 public double Z;
@@ -48,15 +45,16 @@ public Vector3.Vect surfaceNormal;
 public double textureX;
 public double textureY;
 }
+*/
 
 
-
+/*
 public struct VertexRow
 {
-public VertexPos[] Row;
-public int RowLast;
+public VertexPos[] row;
+public int rowLast;
 }
-
+*/
 
 
 
@@ -66,7 +64,7 @@ internal Surface( MainData useMainData,
 {
 // Emmissive = IsEmmissive;
 
-// geoMod = new GeometryModel3D();
+geomMod = new GeometryModel3D();
 }
 
 
@@ -74,35 +72,37 @@ internal Surface( MainData useMainData,
 internal override GeometryModel3D
                          getGeometryModel()
 {
-return geoMod;
+return geomMod;
 }
 
 
 
-internal override void makeNewGeoModel()
+internal override void makeNewGeomModel()
 {
 try
 {
 DiffuseMaterial solidMat = new DiffuseMaterial();
-// SolidMat.Brush = Brushes.Blue;
 
-solidMat.Brush = setTextureImageBrush();
-geoMod.Material = solidMat;
+solidMat.Brush = Brushes.Blue;
+// solidMat.Brush = setTextureImageBrush();
 
-MakeSphericalModel();
+geomMod.Material = solidMat;
 
-geoMod.Geometry = mesh;
+makeModel();
+
+geomMod.Geometry = mesh;
 
 }
 catch( Exception ) // Except )
   {
   mData.showStatus(
-       "Exception Surface.makeNewGeoModel()." );
+      "Exception Surface.makeNewGeomModel()." );
   }
 }
 
 
 
+/*
 private ImageBrush setTextureImageBrush()
 {
 BitmapImage BMapImage = new BitmapImage();
@@ -112,25 +112,24 @@ BMapImage.BeginInit();
 
 BMapImage.UriSource = new Uri( TextureFileName );
 
-    // BMapImage.DecodePixelWidth = 200;
+// BMapImage.DecodePixelWidth = 200;
 
-    BMapImage.EndInit();
+BMapImage.EndInit();
 
-    // ImageBrush:
-    // https://msdn.microsoft.com/en-us/library/system.windows.media.imagebrush(v=vs.110).aspx
-    ImageBrush ImgBrush = new ImageBrush();
-    ImgBrush.ImageSource = BMapImage;
-    return ImgBrush;
-    }
-
-
+// ImageBrush:
+ImageBrush ImgBrush = new ImageBrush();
+ImgBrush.ImageSource = BMapImage;
+return ImgBrush;
+}
+*/
 
 
 
-  internal void SetLatLonPositionXYZ(
-                      ref LatLongPosition Result,
-                      double CosLatRadians,
-                      double SinLatRadians )
+/*
+internal void SetLatLonPositionXYZ(
+                    ref LatLongPosition Result,
+                    double CosLatRadians,
+                    double SinLatRadians )
     {
     double LonRadians = NumbersEC.DegreesToRadians( Result.Longitude );
 
@@ -160,11 +159,12 @@ BMapImage.UriSource = new Uri( TextureFileName );
     Result.TextureY = Result.TextureY * ( 1.0d / 180.0d );
     Result.TextureY = 1 - Result.TextureY;
     }
+*/
 
 
 
-
-  private void AddSurfaceVertex( 
+/*
+  private void AddSurfaceVertex(
                LatLongPosition Pos )
     {
     // Surface.Positions.Count
@@ -200,10 +200,11 @@ BMapImage.UriSource = new Uri( TextureFileName );
     Vector3D SurfaceNormal = new Vector3D( Pos.SurfaceNormal.X, Pos.SurfaceNormal.Y, Pos.SurfaceNormal.Z );
     Surface.Normals.Add( SurfaceNormal );
     }
+*/
 
 
 
-
+/*
   private void AddSurfaceTriangleIndex( int Index1,
                                         int Index2,
                                         int Index3 )
@@ -212,7 +213,7 @@ BMapImage.UriSource = new Uri( TextureFileName );
     Surface.TriangleIndices.Add( Index2 );
     Surface.TriangleIndices.Add( Index3 );
     }
-
+*/
 
 
 
@@ -220,16 +221,17 @@ private void makeModel()
 {
 try
 {
-/*
 mesh = new MeshGeometry3D();
 
+/*
 lastVertexIndex = 0;
 vertexRowsLast = 20 - 1;
 int vertexRowsMiddle = 9;
 
 vertexRows = new VertexRow[vertexRowsLast];
 
-    LatLongPosition PosNorthPole = new LatLongPosition();
+
+ LatLongPosition PosNorthPole = new LatLongPosition();
     PosNorthPole.Latitude = 90.0;
     PosNorthPole.Longitude = 0;
     PosNorthPole.Index = LastVertexIndex;
@@ -317,6 +319,7 @@ vertexRows = new VertexRow[vertexRowsLast];
       }
 
     FreeVertexRows();
+*/
 
 }
 catch( Exception ) // Except )
@@ -328,6 +331,8 @@ catch( Exception ) // Except )
 
 
 
+
+/*
   private void MakePoleTriangles()
     {
     try
@@ -383,11 +388,12 @@ catch( Exception ) // Except )
       ShowStatus( "Exception in PlanetSphere.MakePoleTriangles(): " + Except.Message );
       }
     }
+*/
 
 
 
 
-
+/*
   private bool MakeRowTriangles( int FirstRow, int SecondRow )
     {
     try
@@ -429,10 +435,11 @@ catch( Exception ) // Except )
       return false;
       }
     }
+*/
 
 
 
-
+/*
   private bool MakeDoubleRowTriangles( int FirstRow, int DoubleRow )
     {
     try
@@ -493,11 +500,11 @@ catch( Exception ) // Except )
       return false;
       }
     }
+*/
 
 
 
-
-
+/*
   private bool MakeDoubleReverseRowTriangles( int BottomRow, int DoubleRow )
     {
     try
@@ -559,31 +566,33 @@ catch( Exception ) // Except )
       return false;
       }
     }
+*/
+
+
+/*
+private void freeVertexRows()
+{
+for( int count = 0; count < vertexRowsLast;
+                                  count++ )
+  {
+  vertexRows[count].row = null;
+  }
+
+vertexRows = null;
+}
+*/
 
 
 
-
-  private void FreeVertexRows()
-    {
-    for( int Count = 0; Count < VertexRowsLast; Count++ )
-      {
-      VertexRows[Count].Row = null;
-      }
-
-    VertexRows = null;
-    }
-
-
-
-
-  private bool MakeOneVertexRow( int RowIndex,
-                                 int HowMany,
-                                 double Latitude )
-    {
-    try
-    {
-    VertexRows[RowIndex] = new VertexRow();
-    VertexRows[RowIndex].Row = new LatLongPosition[HowMany];
+/*
+private bool makeOneVertexRow( int rowIndex,
+                               int howMany,
+                               double latitude )
+{
+try
+{
+vertexRows[rowIndex] = new vertexRow();
+vertexRows[rowIndex].row = new LatLongPosition[HowMany];
     VertexRows[RowIndex].RowLast = HowMany;
 
     double LatRadians = NumbersEC.DegreesToRadians( Latitude );
@@ -631,10 +640,11 @@ catch( Exception ) // Except )
       return false;
       }
     }
+*/
 
 
 
 
 } // Class
 
-*/
+

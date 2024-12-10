@@ -43,19 +43,18 @@ private ThreeDScene()
 
 
 
-internal ThreeDScene( MainData useMainData,
-                Model3DGroup useMain3DGroup,
-                GeomModel useGeomModel )
+internal ThreeDScene( MainData useMainData )
 {
 mData = useMainData;
 
 try
 {
 pCamera = new PerspectiveCamera();
+main3DGroup = new Model3DGroup();
 mainModelVisual3D = new ModelVisual3D();
 
-main3DGroup = useMain3DGroup;
-geomModel = useGeomModel;
+// This hasn't been constructed yet.
+// geomModel =
 
 setupCamera();
 mainModelVisual3D.Content = main3DGroup;
@@ -71,11 +70,26 @@ catch( Exception ) // Except )
 
 
 
+internal void setGeomModel(
+                      GeomModel useGeomModel )
+{
+geomModel = useGeomModel;
+geomModel.set3DGroup( main3DGroup );
+}
+
+
+
 internal PerspectiveCamera getCamera()
 {
 return pCamera;
 }
 
+
+
+internal Model3DGroup getMain3DGroup()
+{
+return main3DGroup;
+}
 
 
 
@@ -340,9 +354,9 @@ internal void moveToDefaultView()
 {
 setCameraTo( 0, // X
              0, // Y
-             0, // Z
-             0,  // LookAt vector.
-             1,
+             -10, // Z
+             1,  // LookAt vector.
+             0,
              0,
              0, // Up vector.
              0,

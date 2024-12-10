@@ -51,7 +51,7 @@ objectName = useName;
 
 
 
-abstract internal void makeNewGeoModel();
+abstract internal void makeNewGeomModel();
 
 abstract internal GeometryModel3D
                          getGeometryModel();
