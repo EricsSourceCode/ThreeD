@@ -1,3 +1,9 @@
+// The Surface of the sphere for a planet sphere:
+//  private MeshGeometry3D Surface;
+// It is called mesh here.
+
+
+
 // Copyright Eric Chauvin 2018 - 2024.
 
 
@@ -28,33 +34,6 @@ class Surface : SpaceObject
 // internal string textureFileName = "";
 private MeshGeometry3D mesh;
 private GeometryModel3D geomMod;
-// private VertexRow[] vertexRows;
-// private int vertexRowsLast = 0;
-// private int lastVertexIndex = 0;
-
-
-
-/*
-public struct VertexPos
-{
-public int index;
-public double X;
-public double Y;
-public double Z;
-public Vector3.Vect surfaceNormal;
-public double textureX;
-public double textureY;
-}
-*/
-
-
-/*
-public struct VertexRow
-{
-public VertexPos[] row;
-public int rowLast;
-}
-*/
 
 
 
@@ -62,9 +41,9 @@ internal Surface( MainData useMainData,
                   string useName ):
                   base( useMainData, useName )
 {
-// Emmissive = IsEmmissive;
-
 geomMod = new GeometryModel3D();
+mesh = new MeshGeometry3D();
+geomMod.Geometry = mesh;
 }
 
 
@@ -86,12 +65,23 @@ DiffuseMaterial solidMat = new DiffuseMaterial();
 solidMat.Brush = Brushes.Blue;
 // solidMat.Brush = setTextureImageBrush();
 
+// There is only one material for this 
+// GeometryModel3D. 
+
 geomMod.Material = solidMat;
 
-makeModel();
+===== All I want in a Surface is to put in
+the coordinates and have it show it.
+And the texture.
 
-geomMod.Geometry = mesh;
+mesh.Positions.Clear();
+mesh.Normals.Clear();
+mesh.TextureCoordinates.Clear();
 
+// Counter clockwise.
+addVertex( 0, 0, 0, 0, 0, 1 );
+addVertex( 1, 0, 0, 0, 0, 1 );
+addVertex( 0, 1, 0, 0, 0, 1 );
 }
 catch( Exception ) // Except )
   {
@@ -102,34 +92,189 @@ catch( Exception ) // Except )
 
 
 
-/*
-private ImageBrush setTextureImageBrush()
+private void addVertex( double x,
+                        double y,
+                        double z, 
+                        double normX,
+                        double normY,
+                        double normZ )
 {
-BitmapImage BMapImage = new BitmapImage();
+Point3D vertex = new Point3D( x, y, z );
 
-// Things have to be in this Begin-end block.
-BMapImage.BeginInit();
+// mesh.Positions.Count
+// mesh.Positions.Items[Index];
 
-BMapImage.UriSource = new Uri( TextureFileName );
+mesh.Positions.Add( vertex );
 
-// BMapImage.DecodePixelWidth = 200;
+Vector3D normal = new Vector3D( normX, 
+                                normY,
+                                normZ );
 
-BMapImage.EndInit();
+mesh.Normals.Add( normal );
 
-// ImageBrush:
-ImageBrush ImgBrush = new ImageBrush();
-ImgBrush.ImageSource = BMapImage;
-return ImgBrush;
+
+// Texture coordinates are "scaled by their
+// bounding box".  You have to create the right
+// "bounding box."  You have to give it bounds
+// by setting vertexes out on the edges.  In
+// the example above for latitude/longitude,
+// you have to set both the North Pole and
+// the South Pole vertexes in order to give
+// the north and south latitudes a "bounding box"
+// so that the texture can be scaled all the way
+// from north to south.  And you have to set
+// vertexes at 180 longitude and -180 longitude
+// (out on the edges) to give it the right
+// bounding box for longitude.  Otherwise it will
+// scale the texture image in ways you don't want.
+
+// Point TexturePoint = new Point(
+//             Pos.TextureX, Pos.TextureY );
+// mesh.TextureCoordinates.Add( TexturePoint );
 }
-*/
+
+
+
+} // Class
 
 
 
 /*
-internal void SetLatLonPositionXYZ(
-                    ref LatLongPosition Result,
-                    double CosLatRadians,
-                    double SinLatRadians )
+
+=========
+
+namespace ClimateModel
+{
+  class PlanetSphere : SpaceObject
+  {
+  internal string TextureFileName = "";
+  internal double Radius = 1;
+  private MeshGeometry3D Surface;
+  private GeometryModel3D GeoMod;
+  private VertexRow[] VertexRows;
+  private int VertexRowsLast = 0;
+  private int LastVertexIndex = 0;
+  internal double LongitudeHoursRadians = 0; // Time change.
+  // internal bool Emmissive = false;
+
+
+
+  public struct LatLongPosition
+    {
+    public int Index;
+    public double Latitude;
+    public double Longitude;
+    public double X;
+    public double Y;
+    public double Z;
+    public Vector3.Vector SurfaceNormal;
+    public double TextureX;
+    public double TextureY;
+    // public double Radius;
+    // public double Elevation;
+    }
+
+
+
+  public struct VertexRow
+    {
+    public LatLongPosition[] Row;
+    public int RowLast;
+    }
+
+
+
+  internal PlanetSphere( MainForm UseForm,
+                         string UseName,
+                         // bool IsEmmissive,
+                         string JPLFileName
+                      ): base( UseForm,
+                               UseName,
+                               JPLFileName )
+    {
+    // Emmissive = IsEmmissive;
+
+    GeoMod = new GeometryModel3D();
+    }
+
+
+
+  internal override GeometryModel3D GetGeometryModel()
+    {
+    return GeoMod;
+    }
+
+
+
+  internal override void MakeNewGeometryModel()
+    {
+    try
+    {
+
+
+
+
+/////////////
+    if( Emmissive )
+      {
+      EmissiveMaterial SolidMatE = new EmissiveMaterial();
+      SolidMatE.Brush = SetTextureImageBrush();
+      GeoMod.Material = SolidMatE;
+      }
+    else
+      { ////////////
+
+
+
+      DiffuseMaterial SolidMat = new DiffuseMaterial();
+      // SolidMat.Brush = Brushes.Blue;
+      SolidMat.Brush = SetTextureImageBrush();
+      GeoMod.Material = SolidMat;
+      // }
+
+     MakeSphericalModel();
+
+    // if( Surface == null )
+
+    GeoMod.Geometry = Surface;
+    }
+    catch( Exception Except )
+      {
+      ShowStatus( "Exception in PlanetSphere.MakeNewGeometryModel(): " + Except.Message );
+      }
+    }
+
+
+
+  private ImageBrush SetTextureImageBrush()
+    {
+    // ImageDrawing:
+    // https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imagedrawing?view=netframework-4.7.1
+
+    BitmapImage BMapImage = new BitmapImage();
+
+    // Things have to be in this Begin-end block.
+    BMapImage.BeginInit();
+
+    BMapImage.UriSource = new Uri( TextureFileName );
+
+    // BMapImage.DecodePixelWidth = 200;
+
+    BMapImage.EndInit();
+
+    // ImageBrush:
+    // https://msdn.microsoft.com/en-us/library/system.windows.media.imagebrush(v=vs.110).aspx
+    ImageBrush ImgBrush = new ImageBrush();
+    ImgBrush.ImageSource = BMapImage;
+    return ImgBrush;
+    }
+
+
+
+  internal void SetLatLonPositionXYZ(
+                      ref LatLongPosition Result,
+                      double CosLatRadians,
+                      double SinLatRadians )
     {
     double LonRadians = NumbersEC.DegreesToRadians( Result.Longitude );
 
@@ -159,13 +304,10 @@ internal void SetLatLonPositionXYZ(
     Result.TextureY = Result.TextureY * ( 1.0d / 180.0d );
     Result.TextureY = 1 - Result.TextureY;
     }
-*/
 
 
 
-/*
-  private void AddSurfaceVertex(
-               LatLongPosition Pos )
+  private void AddSurfaceVertex( LatLongPosition Pos )
     {
     // Surface.Positions.Count
     // Surface.Positions.Items[Index];
@@ -200,11 +342,9 @@ internal void SetLatLonPositionXYZ(
     Vector3D SurfaceNormal = new Vector3D( Pos.SurfaceNormal.X, Pos.SurfaceNormal.Y, Pos.SurfaceNormal.Z );
     Surface.Normals.Add( SurfaceNormal );
     }
-*/
 
 
 
-/*
   private void AddSurfaceTriangleIndex( int Index1,
                                         int Index2,
                                         int Index3 )
@@ -213,25 +353,22 @@ internal void SetLatLonPositionXYZ(
     Surface.TriangleIndices.Add( Index2 );
     Surface.TriangleIndices.Add( Index3 );
     }
-*/
 
 
 
-private void makeModel()
-{
-try
-{
-mesh = new MeshGeometry3D();
+  private void MakeSphericalModel()
+    {
+    try
+    {
+    Surface = new MeshGeometry3D();
 
-/*
-lastVertexIndex = 0;
-vertexRowsLast = 20 - 1;
-int vertexRowsMiddle = 9;
+    LastVertexIndex = 0;
+    VertexRowsLast = 20 - 1;
+    int VertexRowsMiddle = 9;
 
-vertexRows = new VertexRow[vertexRowsLast];
+    VertexRows = new VertexRow[VertexRowsLast];
 
-
- LatLongPosition PosNorthPole = new LatLongPosition();
+    LatLongPosition PosNorthPole = new LatLongPosition();
     PosNorthPole.Latitude = 90.0;
     PosNorthPole.Longitude = 0;
     PosNorthPole.Index = LastVertexIndex;
@@ -319,20 +456,15 @@ vertexRows = new VertexRow[vertexRowsLast];
       }
 
     FreeVertexRows();
-*/
-
-}
-catch( Exception ) // Except )
-  {
-  mData.showStatus(
-          "Exception in Surface.makeModel()" );
-  }
-}
+    }
+    catch( Exception Except )
+      {
+      ShowStatus( "Exception in PlanetSphere.MakeSphericalModel(): " + Except.Message );
+      }
+    }
 
 
 
-
-/*
   private void MakePoleTriangles()
     {
     try
@@ -388,12 +520,9 @@ catch( Exception ) // Except )
       ShowStatus( "Exception in PlanetSphere.MakePoleTriangles(): " + Except.Message );
       }
     }
-*/
 
 
 
-
-/*
   private bool MakeRowTriangles( int FirstRow, int SecondRow )
     {
     try
@@ -435,11 +564,9 @@ catch( Exception ) // Except )
       return false;
       }
     }
-*/
 
 
 
-/*
   private bool MakeDoubleRowTriangles( int FirstRow, int DoubleRow )
     {
     try
@@ -500,11 +627,9 @@ catch( Exception ) // Except )
       return false;
       }
     }
-*/
 
 
 
-/*
   private bool MakeDoubleReverseRowTriangles( int BottomRow, int DoubleRow )
     {
     try
@@ -566,33 +691,29 @@ catch( Exception ) // Except )
       return false;
       }
     }
-*/
-
-
-/*
-private void freeVertexRows()
-{
-for( int count = 0; count < vertexRowsLast;
-                                  count++ )
-  {
-  vertexRows[count].row = null;
-  }
-
-vertexRows = null;
-}
-*/
 
 
 
-/*
-private bool makeOneVertexRow( int rowIndex,
-                               int howMany,
-                               double latitude )
-{
-try
-{
-vertexRows[rowIndex] = new vertexRow();
-vertexRows[rowIndex].row = new LatLongPosition[HowMany];
+  private void FreeVertexRows()
+    {
+    for( int Count = 0; Count < VertexRowsLast; Count++ )
+      {
+      VertexRows[Count].Row = null;
+      }
+
+    VertexRows = null;
+    }
+
+
+
+  private bool MakeOneVertexRow( int RowIndex,
+                                 int HowMany,
+                                 double Latitude )
+    {
+    try
+    {
+    VertexRows[RowIndex] = new VertexRow();
+    VertexRows[RowIndex].Row = new LatLongPosition[HowMany];
     VertexRows[RowIndex].RowLast = HowMany;
 
     double LatRadians = NumbersEC.DegreesToRadians( Latitude );
@@ -640,11 +761,9 @@ vertexRows[rowIndex].row = new LatLongPosition[HowMany];
       return false;
       }
     }
+
+
+
+  }
+}
 */
-
-
-
-
-} // Class
-
-

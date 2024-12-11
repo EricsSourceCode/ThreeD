@@ -32,7 +32,9 @@ private MainData mData;
 private PerspectiveCamera pCamera;
 private Model3DGroup main3DGroup;
 private ModelVisual3D mainModelVisual3D;
-internal GeomModel geomModel;
+
+// Make any VisualModel class for the app.
+internal VisualModel visModel;
 
 
 
@@ -43,39 +45,24 @@ private ThreeDScene()
 
 
 
-internal ThreeDScene( MainData useMainData )
+internal ThreeDScene( MainData useMainData,
+                      VisualModel useVisModel )
 {
 mData = useMainData;
 
-try
-{
 pCamera = new PerspectiveCamera();
 main3DGroup = new Model3DGroup();
 mainModelVisual3D = new ModelVisual3D();
+mainModelVisual3D.Content = main3DGroup;
 
-// This hasn't been constructed yet.
-// geomModel =
+visModel = useVisModel;
+visModel.set3DGroup( main3DGroup );
+visModel.setupObjects();
 
 setupCamera();
-mainModelVisual3D.Content = main3DGroup;
 moveToDefaultView();
 }
-catch( Exception ) // Except )
-  {
-  mData.showStatus(
-      "Exception in ThreeScene constructor." );
-  return;
-  }
-}
 
-
-
-internal void setGeomModel(
-                      GeomModel useGeomModel )
-{
-geomModel = useGeomModel;
-geomModel.set3DGroup( main3DGroup );
-}
 
 
 
@@ -352,15 +339,18 @@ pCamera.Position = moveTo;
 
 internal void moveToDefaultView()
 {
+// X is to the right, Y is up, Z is toward
+// the camera.
+
 setCameraTo( 0, // X
              0, // Y
-             -10, // Z
-             1,  // LookAt vector.
+             10, // Z
+             0,  // LookAt vector.
              0,
-             0,
+             -1,
              0, // Up vector.
-             0,
-             1 ); // Up is with Z = 1.
+             1,
+             0 );
 
 }
 

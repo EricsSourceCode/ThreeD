@@ -101,7 +101,7 @@ viewPort.Children.Add(
             scene.getMainModelVisual3D() );
 
 viewPort.Camera = scene.getCamera();
-scene.geomModel.makeNewGeometryModels();
+scene.visModel.makeNewGeomModels();
 }
 
 
