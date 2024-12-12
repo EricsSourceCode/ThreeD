@@ -28,8 +28,8 @@ abstract class SpaceObject
 {
 protected MainData mData;
 internal string objectName = "";
-// internal Vector3.Vect position;
 
+// internal Vector3.Vect position;
 // internal Vector3.Vector Velocity;
 // internal Vector3.Vector Acceleration;
 // internal double Mass;
@@ -51,7 +51,7 @@ objectName = useName;
 
 
 
-abstract internal void makeNewGeomModel();
+// abstract internal void makeNewGeomModel();
 
 abstract internal GeometryModel3D
                          getGeometryModel();
