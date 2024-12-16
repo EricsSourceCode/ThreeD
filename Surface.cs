@@ -23,7 +23,7 @@ using System.Windows.Media.Imaging;
 
 
 
-class Surface : SpaceObject
+class Surface
 {
 // internal string textureFileName = "";
 private MeshGeometry3D mesh;
@@ -31,9 +31,7 @@ private GeometryModel3D geomMod;
 
 
 
-internal Surface( MainData useMainData,
-                  string useName ):
-                  base( useMainData, useName )
+internal Surface( MainData useMainData )
 {
 geomMod = new GeometryModel3D();
 mesh = new MeshGeometry3D();
@@ -42,61 +40,23 @@ geomMod.Geometry = mesh;
 
 
 
-internal override GeometryModel3D
-                         getGeometryModel()
+internal void clear()
+{
+mesh.Positions.Clear();
+mesh.Normals.Clear();
+mesh.TextureCoordinates.Clear();
+}
+
+
+
+internal GeometryModel3D getGeometryModel()
 {
 return geomMod;
 }
 
 
 
-
-/*
-internal override void makeNewGeomModel()
-{
-try
-{
-DiffuseMaterial solidMat = new DiffuseMaterial();
-
-solidMat.Brush = Brushes.Blue;
-// solidMat.Brush = setTextureImageBrush();
-
-// There is only one material for this
-// GeometryModel3D.
-
-geomMod.Material = solidMat;
-
-mesh.Positions.Clear();
-mesh.Normals.Clear();
-mesh.TextureCoordinates.Clear();
-
-// Counter clockwise.
-addVertex( 0, 0, 0 );
-addVertex( 1, 0, 0 );
-addVertex( 0, 1, 0 );
-
-addNormal( 0, 0, 1 );
-addNormal( 0, 0, 1 );
-addNormal( 0, 0, 1 );
-
-// addTexturePnt( double x, double y )
-
-// Make it face backwards (clockwise winding).
-// addTriangleIndex( 2, 1, 0 );
-
-addTriangleIndex( 0, 1, 2 );
-
-}
-catch( Exception ) // Except )
-  {
-  mData.showStatus(
-      "Exception Surface.makeNewGeomModel()." );
-  }
-}
-*/
-
-
-private void addVertex( double x,
+internal void addVertex( double x,
                         double y,
                         double z )
 {
@@ -114,7 +74,7 @@ mesh.Positions.Add( vertex );
 
 
 
-private void addNormal( double x,
+internal void addNormal( double x,
                         double y,
                         double z )
 {
@@ -125,7 +85,7 @@ mesh.Normals.Add( norm );
 
 
 
-private void addTexturePnt( double x,
+internal void addTexturePt( double x,
                             double y )
 {
 // Texture coordinates are "scaled by their
@@ -151,7 +111,7 @@ mesh.TextureCoordinates.Add( texPoint );
 
 
 
-private void addTriangleIndex( int index1,
+internal void addTriangleIndex( int index1,
                                int index2,
                                int index3 )
 {
@@ -162,8 +122,19 @@ mesh.TriangleIndices.Add( index3 );
 
 
 
+internal void setMaterialBlue()
+{
+DiffuseMaterial solidMat = new DiffuseMaterial();
+
+solidMat.Brush = Brushes.Blue;
+// solidMat.Brush = setTextureImageBrush();
+
+// There is only one material for this
+// GeometryModel3D.
+
+geomMod.Material = solidMat;
+}
+
+
+
 } // Class
-
-
-
-

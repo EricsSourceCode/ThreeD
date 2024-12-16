@@ -1,4 +1,4 @@
-// Copyright Eric Chauvin 2018 - 2024.
+// Copyright Eric Chauvin 2024.
 
 
 
@@ -24,10 +24,9 @@ using System.Windows.Media.Imaging;
 // namespace
 
 
-abstract class SpaceObject
+public abstract class SpaceObject
 {
 protected MainData mData;
-internal string objectName = "";
 
 // internal Vector3.Vect position;
 // internal Vector3.Vector Velocity;
@@ -35,29 +34,25 @@ internal string objectName = "";
 // internal double Mass;
 
 
-
-private SpaceObject()
+// private
+protected SpaceObject()
 {
 }
 
 
 
-internal SpaceObject( MainData useMainData,
-                      string useName )
+protected SpaceObject( MainData useMainData )
 {
 mData = useMainData;
-objectName = useName;
+// objectName = useName;
 }
 
 
 
-// abstract internal void makeNewGeomModel();
+abstract internal void makeNewGeomModel();
 
 abstract internal GeometryModel3D
                          getGeometryModel();
-
-
-// internal void SetNextPositionFromVelocity(
 
 
 
