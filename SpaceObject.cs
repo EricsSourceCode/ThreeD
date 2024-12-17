@@ -49,7 +49,7 @@ mData = useMainData;
 
 
 
-abstract internal void makeNewGeomModel();
+// abstract internal void makeNewGeomModel();
 
 abstract internal GeometryModel3D
                          getGeometryModel();
