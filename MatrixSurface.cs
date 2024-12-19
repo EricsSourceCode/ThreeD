@@ -25,16 +25,6 @@ using System.Windows.Media.Imaging;
 // superscripts and columns are subscripts.
 
 
-// If it's the same row but the column is
-// incremented by one, then the values are
-// next to each other in ram.  And in the same
-// area of the RAM cache.  So on for-loops
-// of columns and rows, the outside loop should
-// be rows.  Then it's reading/writing to
-// adjacent areas in ram in sequence.
-// for( row
-//   for( column
-
 
 
 // namespace
@@ -100,6 +90,10 @@ internal SurfacePos getVal( int row,
 {
 int where = (row * rowSize) + column;
 
+// Test:
+RangeT.test( row, 0, 1,
+           "MatrixSurface.getVal() range." );
+
 RangeT.test( where, 0, lastArray - 1,
            "MatrixSurface.getVal() range." );
 
@@ -112,6 +106,10 @@ internal void setVal( int row, int column,
                       SurfacePos pos )
 {
 int where = (row * rowSize) + column;
+
+// Test:
+RangeT.test( row, 0, 1,
+           "MatrixSurface.setVal() range." );
 
 RangeT.test( where, 0, lastArray - 1,
            "MatrixSurface.setVal() range." );
@@ -146,7 +144,7 @@ surface.addTriangleIndex( 0, 1, 2 );
 
 
 
-internal void setFromTwoColumns2()
+internal void setFromTwoColumns()
 {
 surface.clear();
 surface.setMaterialBlue();
@@ -172,9 +170,10 @@ for( int col = 0; col < last; col++ )
 
 
 // surface.addTriangleIndex( last, last + 1, 0 );
-// surface.addTriangleIndex( last + 1, 1, 0 );
+surface.addTriangleIndex( last + 1, 1, 0 );
 
 
+/*
 for( int count = 0; count < last; count++ )
   {
   surface.addTriangleIndex( last + count,
@@ -185,7 +184,7 @@ for( int count = 0; count < last; count++ )
                             1 + count,
                             0 + count );
   }
-
+*/
 
 
 

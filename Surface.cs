@@ -44,6 +44,7 @@ internal void clear()
 {
 mesh.Positions.Clear();
 mesh.Normals.Clear();
+mesh.TriangleIndices.Clear();
 mesh.TextureCoordinates.Clear();
 }
 
