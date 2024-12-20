@@ -79,6 +79,7 @@ internal void setSize( int rows, int columns )
 {
 rowSize = rows;
 columnSize = columns;
+
 lastArray = rows * columns;
 posArray = new SurfacePos[lastArray];
 }
@@ -88,7 +89,10 @@ posArray = new SurfacePos[lastArray];
 internal SurfacePos getVal( int row,
                             int column )
 {
-int where = (row * rowSize) + column;
+// If columnSize was 2000 and it was row
+// 1, then that is 2000 + column.
+
+int where = (row * columnSize) + column;
 
 // Test:
 RangeT.test( row, 0, 1,
@@ -105,7 +109,7 @@ return posArray[where];
 internal void setVal( int row, int column,
                       SurfacePos pos )
 {
-int where = (row * rowSize) + column;
+int where = (row * columnSize) + column;
 
 // Test:
 RangeT.test( row, 0, 1,
@@ -154,9 +158,15 @@ surface.setMaterialBlue();
 SurfacePos pos;
 
 int last = columnSize;
+
+// col size is 2000.
+// mData.showStatus( "col size: " + last );
+
 for( int col = 0; col < last; col++ )
   {
   pos = getVal( 0, col );
+  // Test: pos.y = col;
+
   surface.addVertex( pos.x, pos.y, pos.z );
   surface.addNormal( 0, 0, 1 );
   }
@@ -170,10 +180,8 @@ for( int col = 0; col < last; col++ )
 
 
 // surface.addTriangleIndex( last, last + 1, 0 );
-surface.addTriangleIndex( last + 1, 1, 0 );
+// surface.addTriangleIndex( last + 1, 1, 0 );
 
-
-/*
 for( int count = 0; count < last; count++ )
   {
   surface.addTriangleIndex( last + count,
@@ -184,7 +192,6 @@ for( int count = 0; count < last; count++ )
                             1 + count,
                             0 + count );
   }
-*/
 
 
 
@@ -543,6 +550,7 @@ namespace ClimateModel
     catch( Exception Except )
       {
       ShowStatus( "Exception in PlanetSphere.MakeSphericalModel(): " + Except.Message );
+      return;
       }
     }
 
