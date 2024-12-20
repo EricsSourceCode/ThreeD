@@ -89,6 +89,8 @@ posArray = new SurfacePos[lastArray];
 internal SurfacePos getVal( int row,
                             int column )
 {
+==== This was it.
+
 // If columnSize was 2000 and it was row
 // 1, then that is 2000 + column.
 
