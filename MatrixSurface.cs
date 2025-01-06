@@ -1,4 +1,4 @@
-// Copyright Eric Chauvin 2024.
+// Copyright Eric Chauvin 2024 - 2025.
 
 
 
@@ -39,20 +39,26 @@ private int rowSize = 1;
 private int columnSize = 1;
 private int lastArray = 1;
 private SurfacePos[] posArray;
+private Triangle[] triArray;
 
+
+public struct Triangle
+{
+public int one;
+public int two;
+public int three;
+}
 
 
 public struct SurfacePos
 {
 // public int Index;
-// public double Latitude;
-// public double Longitude;
-public float x;
-public float y;
-public float z;
-//    public Vector3.Vect SurfaceNormal;
-//    public double TextureX;
-//    public double TextureY;
+// public double latitude;
+// public double longitude;
+public Vector3.Vect pos; // Position.
+public Vector3.Vect normal;
+//    public double textureX;
+//    public double textureY;
 }
 
 
@@ -72,6 +78,7 @@ rowSize = 1;
 columnSize = 1;
 lastArray = 1;
 posArray = new SurfacePos[1];
+triArray = new Triangle[1];
 }
 
 
@@ -82,6 +89,7 @@ columnSize = columns;
 
 lastArray = rows * columns;
 posArray = new SurfacePos[lastArray];
+triArray = new Triangle[lastArray];
 }
 
 
@@ -89,15 +97,11 @@ posArray = new SurfacePos[lastArray];
 internal SurfacePos getVal( int row,
                             int column )
 {
-==== This was it.
-
-// If columnSize was 2000 and it was row
-// 1, then that is 2000 + column.
-
+// int where = (column * rowSize) + row;
 int where = (row * columnSize) + column;
 
 // Test:
-RangeT.test( row, 0, 1,
+RangeT.test( row, 0, rowSize - 1,
            "MatrixSurface.getVal() range." );
 
 RangeT.test( where, 0, lastArray - 1,
@@ -114,7 +118,7 @@ internal void setVal( int row, int column,
 int where = (row * columnSize) + column;
 
 // Test:
-RangeT.test( row, 0, 1,
+RangeT.test( row, 0, rowSize - 1,
            "MatrixSurface.setVal() range." );
 
 RangeT.test( where, 0, lastArray - 1,
@@ -124,6 +128,29 @@ RangeT.test( where, 0, lastArray - 1,
 // Not a pointer to an object.
 posArray[where] = pos;
 }
+
+
+
+
+internal Triangle getTriVal( int where )
+{
+RangeT.test( where, 0, lastArray - 1,
+           "MatrixSurface.getTriVal() range." );
+
+return triArray[where];
+}
+
+
+
+internal void setTriVal( int where,
+                         Triangle tri )
+{
+RangeT.test( where, 0, lastArray - 1,
+           "MatrixSurface.setTriVal() range." );
+
+triArray[where] = tri;
+}
+
 
 
 
@@ -157,7 +184,9 @@ surface.setMaterialBlue();
 
 // makeTestTriangle();
 
-SurfacePos pos;
+SurfacePos surfPos;
+Triangle tri;
+int triWhere = 0;
 
 int last = columnSize;
 
@@ -166,33 +195,50 @@ int last = columnSize;
 
 for( int col = 0; col < last; col++ )
   {
-  pos = getVal( 0, col );
+  surfPos = getVal( 0, col );
   // Test: pos.y = col;
 
-  surface.addVertex( pos.x, pos.y, pos.z );
+  surface.addVertex( surfPos.pos.x,
+                     surfPos.pos.y,
+                     surfPos.pos.z );
+
   surface.addNormal( 0, 0, 1 );
   }
 
 for( int col = 0; col < last; col++ )
   {
-  pos = getVal( 1, col );
-  surface.addVertex( pos.x, pos.y, pos.z );
+  surfPos = getVal( 1, col );
+  surface.addVertex( surfPos.pos.x,
+                     surfPos.pos.y,
+                     surfPos.pos.z );
+
   surface.addNormal( 0, 0, 1 );
   }
 
 
-// surface.addTriangleIndex( last, last + 1, 0 );
-// surface.addTriangleIndex( last + 1, 1, 0 );
-
 for( int count = 0; count < last; count++ )
   {
-  surface.addTriangleIndex( last + count,
-                            last + 1 + count,
-                            0 + count );
+  tri.one = last + count;
+  tri.two = last + 1 + count;
+  tri.three = 0 + count;
 
-  surface.addTriangleIndex( last + 1 + count,
-                            1 + count,
-                            0 + count );
+  setTriVal( triWhere, tri );
+  triWhere++;
+
+  surface.addTriangleIndex( tri.one,
+                            tri.two,
+                            tri.three );
+
+  tri.one = last + 1 + count;
+  tri.two = 1 + count;
+  tri.three = 0 + count;
+
+  setTriVal( triWhere, tri );
+  triWhere++;
+
+  surface.addTriangleIndex( tri.one,
+                            tri.two,
+                            tri.three );
   }
 
 

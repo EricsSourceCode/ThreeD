@@ -1,4 +1,4 @@
-// Copyright Eric Chauvin 2018 - 2024.
+// Copyright Eric Chauvin 2018 - 2025.
 
 
 
@@ -151,16 +151,16 @@ Vector3D lookDirection = pCamera.LookDirection;
 Vector3D upDirection = pCamera.UpDirection;
 
 Quatern.QuaternRec axis;
-axis.X = upDirection.X;
-axis.Y = upDirection.Y;
-axis.Z = upDirection.Z;
-axis.W = 0;
+axis.x = upDirection.X;
+axis.y = upDirection.Y;
+axis.z = upDirection.Z;
+axis.w = 0;
 
 Quatern.QuaternRec startPoint;
-startPoint.X = lookDirection.X;
-startPoint.Y = lookDirection.Y;
-startPoint.Z = lookDirection.Z;
-startPoint.W = 0;
+startPoint.x = lookDirection.X;
+startPoint.y = lookDirection.Y;
+startPoint.z = lookDirection.Z;
+startPoint.w = 0;
 
 Quatern.QuaternRec rotationQ =
                  Quatern.setAsRotation(
@@ -174,9 +174,9 @@ Quatern.QuaternRec resultPoint =
                              inverseRotationQ,
                              startPoint );
 
-lookDirection.X = resultPoint.X;
-lookDirection.Y = resultPoint.Y;
-lookDirection.Z = resultPoint.Z;
+lookDirection.X = resultPoint.x;
+lookDirection.Y = resultPoint.y;
+lookDirection.Z = resultPoint.z;
 pCamera.LookDirection = lookDirection;
 }
 
@@ -190,15 +190,15 @@ Vector3D lookDirection = pCamera.LookDirection;
 Vector3D upDirection = pCamera.UpDirection;
 
 Quatern.QuaternRec axis;
-axis.X = lookDirection.X;
-axis.Y = lookDirection.Y;
-axis.Z = lookDirection.Z;
-axis.W = 0;
+axis.x = lookDirection.X;
+axis.y = lookDirection.Y;
+axis.z = lookDirection.Z;
+axis.w = 0;
 
 Vector3.Vect up;
-up.X = upDirection.X;
-up.Y = upDirection.Y;
-up.Z = upDirection.Z;
+up.x = upDirection.X;
+up.y = upDirection.Y;
+up.z = upDirection.Z;
 
 Quatern.QuaternRec rotationQ =
                 Quatern.setAsRotation(
@@ -213,9 +213,9 @@ Vector3.Vect resultPoint =
                              inverseRotationQ,
                              up );
 
-upDirection.X = resultPoint.X;
-upDirection.Y = resultPoint.Y;
-upDirection.Z = resultPoint.Z;
+upDirection.X = resultPoint.x;
+upDirection.Y = resultPoint.y;
+upDirection.Z = resultPoint.z;
 pCamera.UpDirection = upDirection;
 }
 
@@ -227,16 +227,16 @@ Vector3D lookDirection = pCamera.LookDirection;
 Vector3D upDirection = pCamera.UpDirection;
 
 Quatern.QuaternRec look;
-look.X = lookDirection.X;
-look.Y = lookDirection.Y;
-look.Z = lookDirection.Z;
-look.W = 0;
+look.x = lookDirection.X;
+look.y = lookDirection.Y;
+look.z = lookDirection.Z;
+look.w = 0;
 
 Quatern.QuaternRec up;
-up.X = upDirection.X;
-up.Y = upDirection.Y;
-up.Z = upDirection.Z;
-up.W = 0;
+up.x = upDirection.X;
+up.y = upDirection.Y;
+up.z = upDirection.Z;
+up.w = 0;
 
 // X Cross Y = Z.  The Right-hand rule.
 
@@ -251,35 +251,35 @@ Quatern.QuaternRec inverseRotationQ =
 
 // Rotate Up around Cross.
 Quatern.QuaternRec startPoint;
-startPoint.X = up.X;
-startPoint.Y = up.Y;
-startPoint.Z = up.Z;
-startPoint.W = 0;
+startPoint.x = up.x;
+startPoint.y = up.y;
+startPoint.z = up.z;
+startPoint.w = 0;
 
 Quatern.QuaternRec resultPoint =
             Quatern.rotate( rotationQ,
                             inverseRotationQ,
                             startPoint );
 
-upDirection.X = resultPoint.X;
-upDirection.Y = resultPoint.Y;
-upDirection.Z = resultPoint.Z;
+upDirection.X = resultPoint.x;
+upDirection.Y = resultPoint.y;
+upDirection.Z = resultPoint.z;
 pCamera.UpDirection = upDirection;
 
 // Rotate Look around Cross.
-startPoint.X = look.X;
-startPoint.Y = look.Y;
-startPoint.Z = look.Z;
-startPoint.W = 0;
+startPoint.x = look.x;
+startPoint.y = look.y;
+startPoint.z = look.z;
+startPoint.w = 0;
 
 resultPoint = Quatern.rotate(
                           rotationQ,
                           inverseRotationQ,
                           startPoint );
 
-lookDirection.X = resultPoint.X;
-lookDirection.Y = resultPoint.Y;
-lookDirection.Z = resultPoint.Z;
+lookDirection.X = resultPoint.x;
+lookDirection.Y = resultPoint.y;
+lookDirection.Z = resultPoint.z;
 pCamera.LookDirection = lookDirection;
 }
 
@@ -290,25 +290,26 @@ internal void shiftLeftRight( double howFar )
 Vector3D lookDirection = pCamera.LookDirection;
 Vector3D upDirection = pCamera.UpDirection;
 
+
 Quatern.QuaternRec look;
-look.X = lookDirection.X;
-look.Y = lookDirection.Y;
-look.Z = lookDirection.Z;
-look.W = 0;
+look.x = lookDirection.X;
+look.y = lookDirection.Y;
+look.z = lookDirection.Z;
+look.w = 0;
 
 Quatern.QuaternRec up;
-up.X = upDirection.X;
-up.Y = upDirection.Y;
-up.Z = upDirection.Z;
-up.W = 0;
+up.x = upDirection.X;
+up.y = upDirection.Y;
+up.z = upDirection.Z;
+up.w = 0;
 
 Quatern.QuaternRec cross =
             Quatern.crossProduct( look, up );
 
 Vector3D crossVect = new Vector3D();
-crossVect.X = cross.X;
-crossVect.Y = cross.Y;
-crossVect.Z = cross.Z;
+crossVect.X = cross.x;
+crossVect.Y = cross.y;
+crossVect.Z = cross.z;
 
 Point3D position = pCamera.Position;
 
