@@ -40,6 +40,7 @@ private int columnSize = 1;
 private int lastArray = 1;
 private SurfacePos[] posArray;
 private Triangle[] triArray;
+private int triLast = 0;
 
 
 public struct Triangle
@@ -94,16 +95,26 @@ triArray = new Triangle[lastArray];
 
 
 
-internal SurfacePos getVal( int row,
-                            int column )
+internal int getIndex( int row, int column )
 {
-// int where = (column * rowSize) + row;
-int where = (row * columnSize) + column;
-
 // Test:
 RangeT.test( row, 0, rowSize - 1,
-           "MatrixSurface.getVal() range." );
+           "MatrixSurface.getIndex() range." );
 
+RangeT.test( column, 0, columnSize - 1,
+           "MatrixSurface.getIndex() range." );
+
+// This can be optimized for the cache 
+// depending on if you are going sequentially
+// through rows or columns.
+ 
+// return (column * rowSize) + row;
+return (row * columnSize) + column;
+}
+
+
+internal SurfacePos getVal( int where )
+{
 RangeT.test( where, 0, lastArray - 1,
            "MatrixSurface.getVal() range." );
 
@@ -112,20 +123,12 @@ return posArray[where];
 
 
 
-internal void setVal( int row, int column,
+internal void setVal( int where,
                       SurfacePos pos )
 {
-int where = (row * columnSize) + column;
-
-// Test:
-RangeT.test( row, 0, rowSize - 1,
-           "MatrixSurface.setVal() range." );
-
 RangeT.test( where, 0, lastArray - 1,
            "MatrixSurface.setVal() range." );
 
-// This is a copy of the struct.  A value.
-// Not a pointer to an object.
 posArray[where] = pos;
 }
 
@@ -186,44 +189,45 @@ surface.setMaterialBlue();
 
 SurfacePos surfPos;
 Triangle tri;
-int triWhere = 0;
 
 int last = columnSize;
+triLast = 0;
 
 // col size is 2000.
 // mData.showStatus( "col size: " + last );
 
 for( int col = 0; col < last; col++ )
   {
-  surfPos = getVal( 0, col );
-  // Test: pos.y = col;
+  int index = getIndex( 0, col );
+  surfPos = getVal( index );
 
   surface.addVertex( surfPos.pos.x,
                      surfPos.pos.y,
                      surfPos.pos.z );
 
-  surface.addNormal( 0, 0, 1 );
+  // surface.addNormal( 0, 0, 1 );
   }
 
 for( int col = 0; col < last; col++ )
   {
-  surfPos = getVal( 1, col );
+  int index = getIndex( 1, col );
+  surfPos = getVal( index );
   surface.addVertex( surfPos.pos.x,
                      surfPos.pos.y,
                      surfPos.pos.z );
 
-  surface.addNormal( 0, 0, 1 );
+  // surface.addNormal( 0, 0, 1 );
   }
 
 
-for( int count = 0; count < last; count++ )
+for( int count = 0; count < (last - 1); count++ )
   {
   tri.one = last + count;
   tri.two = last + 1 + count;
   tri.three = 0 + count;
 
-  setTriVal( triWhere, tri );
-  triWhere++;
+  setTriVal( triLast, tri );
+  triLast++;
 
   surface.addTriangleIndex( tri.one,
                             tri.two,
@@ -233,30 +237,114 @@ for( int count = 0; count < last; count++ )
   tri.two = 1 + count;
   tri.three = 0 + count;
 
-  setTriVal( triWhere, tri );
-  triWhere++;
+  setTriVal( triLast, tri );
+  triLast++;
 
   surface.addTriangleIndex( tri.one,
                             tri.two,
                             tri.three );
   }
 
+// mData.showStatus( "triLast: " + triLast );
 
-
-/*
-surface.addNormal( 0, 0, 1 );
-surface.addNormal( 0, 0, 1 );
-surface.addNormal( 0, 0, 1 );
-
-// surface.addTexturePnt( double x, double y )
-
-// Make it face backwards (clockwise winding).
-// surface.addTriangleIndex( 2, 1, 0 );
-
-surface.addTriangleIndex( 0, 1, 2 );
-*/
+setNormals();
 }
 
+
+
+
+private void clearNormals()
+{
+int last = lastArray;
+for( int count = 0; count < last; count++ )
+  {
+  SurfacePos surfPos = getVal( count );
+  surfPos.normal.x = 0;
+  surfPos.normal.y = 0;
+  surfPos.normal.z = 0;
+  setVal( count, surfPos );
+  }
+}
+
+
+
+
+private void normalizeNormals()
+{
+int last = lastArray;
+for( int count = 0; count < last; count++ )
+  {
+  SurfacePos surfPos = getVal( count );
+  surfPos.normal = Vector3.normalize(
+                               surfPos.normal );
+  setVal( count, surfPos );
+  }
+}
+
+
+
+private void setNormals()
+{
+clearNormals();
+
+Vector3.Vect left;
+Vector3.Vect right;
+
+int last = triLast;
+for( int count = 0; count < last; count++ )
+  {
+  Triangle tri = getTriVal( count );
+
+  SurfacePos surfPosOne = getVal( tri.one );
+  SurfacePos surfPosTwo = getVal( tri.two );
+  SurfacePos surfPosThree = getVal( tri.three );
+
+  left = Vector3.subtract( surfPosOne.pos,
+                           surfPosTwo.pos );
+
+  right = Vector3.subtract( surfPosThree.pos,
+                           surfPosTwo.pos );
+
+  Vector3.Vect cross = Vector3.crossProduct(
+                                 //left, right );
+                              right, left );
+  cross = Vector3.normalize( cross );
+
+  surfPosOne.normal = Vector3.add( cross,
+                          surfPosOne.normal );
+  surfPosTwo.normal = Vector3.add( cross,
+                          surfPosTwo.normal );
+  surfPosThree.normal = Vector3.add( cross,
+                          surfPosThree.normal );
+
+  setVal( tri.one, surfPosOne );
+  setVal( tri.two, surfPosTwo );
+  setVal( tri.three, surfPosThree );
+  }
+
+
+normalizeNormals();
+
+addSurfaceNormals();
+}
+
+
+
+private void addSurfaceNormals()
+{
+surface.clearNormals();
+
+int last = lastArray;
+for( int count = 0; count < last; count++ )
+  {
+  SurfacePos surfPos = getVal( count );
+  surfPos.normal = Vector3.normalize(
+                               surfPos.normal );
+  surface.addNormal( surfPos.normal.x,
+                     surfPos.normal.y,
+                     surfPos.normal.z );
+  }
+}
 
 
 

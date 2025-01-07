@@ -49,6 +49,11 @@ mesh.TextureCoordinates.Clear();
 }
 
 
+internal void clearNormals()
+{
+mesh.Normals.Clear();
+}
+
 
 internal GeometryModel3D getGeometryModel()
 {
