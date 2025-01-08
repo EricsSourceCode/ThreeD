@@ -21,6 +21,9 @@ using System.Windows.Media.Imaging;
 // the second index is the column.
 // <sub>row,column</sub>
 
+
+
+
 // For Neural Networks: Rows are
 // superscripts and columns are subscripts.
 
@@ -37,7 +40,7 @@ public class MatrixSurface : SpaceObject
 private Surface surface;
 private int rowSize = 1;
 private int columnSize = 1;
-private int lastArray = 1;
+private int posLast = 1;
 private SurfacePos[] posArray;
 private Triangle[] triArray;
 private int triLast = 0;
@@ -77,7 +80,7 @@ surface = new Surface( mData );
 
 rowSize = 1;
 columnSize = 1;
-lastArray = 1;
+posLast = 1;
 posArray = new SurfacePos[1];
 triArray = new Triangle[1];
 }
@@ -88,26 +91,25 @@ internal void setSize( int rows, int columns )
 rowSize = rows;
 columnSize = columns;
 
-lastArray = rows * columns;
-posArray = new SurfacePos[lastArray];
-triArray = new Triangle[lastArray];
+posLast = rows * columns;
+posArray = new SurfacePos[posLast];
+triArray = new Triangle[posLast];
 }
 
 
 
 internal int getIndex( int row, int column )
 {
-// Test:
 RangeT.test( row, 0, rowSize - 1,
            "MatrixSurface.getIndex() range." );
 
 RangeT.test( column, 0, columnSize - 1,
            "MatrixSurface.getIndex() range." );
 
-// This can be optimized for the cache 
+// This can be optimized for the cache
 // depending on if you are going sequentially
 // through rows or columns.
- 
+
 // return (column * rowSize) + row;
 return (row * columnSize) + column;
 }
@@ -115,7 +117,7 @@ return (row * columnSize) + column;
 
 internal SurfacePos getVal( int where )
 {
-RangeT.test( where, 0, lastArray - 1,
+RangeT.test( where, 0, posLast - 1,
            "MatrixSurface.getVal() range." );
 
 return posArray[where];
@@ -126,7 +128,7 @@ return posArray[where];
 internal void setVal( int where,
                       SurfacePos pos )
 {
-RangeT.test( where, 0, lastArray - 1,
+RangeT.test( where, 0, posLast - 1,
            "MatrixSurface.setVal() range." );
 
 posArray[where] = pos;
@@ -137,7 +139,7 @@ posArray[where] = pos;
 
 internal Triangle getTriVal( int where )
 {
-RangeT.test( where, 0, lastArray - 1,
+RangeT.test( where, 0, posLast - 1,
            "MatrixSurface.getTriVal() range." );
 
 return triArray[where];
@@ -148,7 +150,7 @@ return triArray[where];
 internal void setTriVal( int where,
                          Triangle tri )
 {
-RangeT.test( where, 0, lastArray - 1,
+RangeT.test( where, 0, posLast - 1,
            "MatrixSurface.setTriVal() range." );
 
 triArray[where] = tri;
@@ -179,8 +181,9 @@ surface.addTriangleIndex( 0, 1, 2 );
 }
 
 
+=====Make a standard test pattern to test normals.
 
-internal void setFromTwoColumns()
+internal void setFromSurfPos()
 {
 surface.clear();
 surface.setMaterialBlue();
@@ -190,40 +193,29 @@ surface.setMaterialBlue();
 SurfacePos surfPos;
 Triangle tri;
 
-int last = columnSize;
 triLast = 0;
 
-// col size is 2000.
-// mData.showStatus( "col size: " + last );
+int columns = columnSize;
 
-for( int col = 0; col < last; col++ )
+for( int row = 0; row < rowSize; row++ )
   {
-  int index = getIndex( 0, col );
-  surfPos = getVal( index );
+  for( int col = 0; col < columns; col++ )
+    {
+    int index = getIndex( row, col );
+    surfPos = getVal( index );
 
-  surface.addVertex( surfPos.pos.x,
-                     surfPos.pos.y,
-                     surfPos.pos.z );
+    surface.addVertex( surfPos.pos.x,
+                       surfPos.pos.y,
+                       surfPos.pos.z );
 
-  // surface.addNormal( 0, 0, 1 );
+    }
   }
 
-for( int col = 0; col < last; col++ )
+for( int count = 0; count < (columns - 1);
+                                  count++ )
   {
-  int index = getIndex( 1, col );
-  surfPos = getVal( index );
-  surface.addVertex( surfPos.pos.x,
-                     surfPos.pos.y,
-                     surfPos.pos.z );
-
-  // surface.addNormal( 0, 0, 1 );
-  }
-
-
-for( int count = 0; count < (last - 1); count++ )
-  {
-  tri.one = last + count;
-  tri.two = last + 1 + count;
+  tri.one = columns + count;
+  tri.two = columns + 1 + count;
   tri.three = 0 + count;
 
   setTriVal( triLast, tri );
@@ -233,7 +225,7 @@ for( int count = 0; count < (last - 1); count++ )
                             tri.two,
                             tri.three );
 
-  tri.one = last + 1 + count;
+  tri.one = columns + 1 + count;
   tri.two = 1 + count;
   tri.three = 0 + count;
 
@@ -255,7 +247,7 @@ setNormals();
 
 private void clearNormals()
 {
-int last = lastArray;
+int last = posLast;
 for( int count = 0; count < last; count++ )
   {
   SurfacePos surfPos = getVal( count );
@@ -271,7 +263,7 @@ for( int count = 0; count < last; count++ )
 
 private void normalizeNormals()
 {
-int last = lastArray;
+int last = posLast;
 for( int count = 0; count < last; count++ )
   {
   SurfacePos surfPos = getVal( count );
@@ -306,8 +298,7 @@ for( int count = 0; count < last; count++ )
                            surfPosTwo.pos );
 
   Vector3.Vect cross = Vector3.crossProduct(
-                                 //left, right );
-                              right, left );
+                               right, left );
   cross = Vector3.normalize( cross );
 
   surfPosOne.normal = Vector3.add( cross,
@@ -334,7 +325,7 @@ private void addSurfaceNormals()
 {
 surface.clearNormals();
 
-int last = lastArray;
+int last = posLast;
 for( int count = 0; count < last; count++ )
   {
   SurfacePos surfPos = getVal( count );
