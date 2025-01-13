@@ -81,9 +81,9 @@ surface = new Surface( mData );
 rowSize = 1;
 columnSize = 1;
 posSize = 1;
-triSize = 1;
+triSize = 2;
 posArray = new SurfacePos[1];
-triArray = new Triangle[1];
+triArray = new Triangle[2];
 }
 
 
@@ -93,7 +93,7 @@ rowSize = rows;
 columnSize = columns;
 
 posSize = rows * columns;
-triSize = rows * columns;
+triSize = rows * columns * 2;
 posArray = new SurfacePos[posSize];
 triArray = new Triangle[triSize];
 }
@@ -190,36 +190,28 @@ surface.addTriangleIndex( 0, 1, 2 );
 
 internal void makeTestPattern()
 {
-makeTestTriangle();
-
+// makeTestTriangle();
 // mData.showStatus( "makeTestPattern." );
 
-/*
-setSize( 100, 100 );
-
-surface.clear();
-surface.setMaterialBlue();
-
+//       rows, cols
+setSize( 50, 100 );
 
 SurfacePos surfPos;
 surfPos.normal.x = 0;
 surfPos.normal.y = 0;
 surfPos.normal.z = 1;
 
-int columns = columnSize;
-
 for( int row = 0; row < rowSize; row++ )
   {
-  for( int col = 0; col < columns; col++ )
+  for( int col = 0; col < columnSize; col++ )
     {
     surfPos.pos.x = col;
     surfPos.pos.y = row;
-    surfPos.pos.z = 1; // col * col * 3.2;
+    surfPos.pos.z = col * col * 0.3;
     int index = getIndex( row, col );
     setPosVal( index, surfPos );
     }
   }
-*/
 }
 
 
@@ -231,18 +223,14 @@ internal void setFromSurfPos()
 surface.clear();
 surface.setMaterialBlue();
 
-// makeTestTriangle();
-
 SurfacePos surfPos;
 Triangle tri;
 
 int triLast = 0;
 
-int columns = columnSize;
-
 for( int row = 0; row < rowSize; row++ )
   {
-  for( int col = 0; col < columns; col++ )
+  for( int col = 0; col < columnSize; col++ )
     {
     int index = getIndex( row, col );
     surfPos = getPosVal( index );
@@ -250,34 +238,38 @@ for( int row = 0; row < rowSize; row++ )
     surface.addVertex( surfPos.pos.x,
                        surfPos.pos.y,
                        surfPos.pos.z );
-
     }
   }
 
-for( int count = 0; count < (columns - 1);
-                                  count++ )
+
+for( int row = 0; row < (rowSize - 1); row++ )
   {
-  tri.one = columns + count;
-  tri.two = columns + 1 + count;
-  tri.three = 0 + count;
+  for( int col = 0; col < (columnSize - 1);
+                                  col++ )
+    {
+    tri.one = (row * columnSize) + col;
+    tri.two = (row * columnSize) + 1 + col;
+    tri.three = ((row + 1) * columnSize) + col;
 
-  setTriVal( triLast, tri );
-  triLast++;
+    setTriVal( triLast, tri );
+    triLast++;
 
-  surface.addTriangleIndex( tri.one,
-                            tri.two,
-                            tri.three );
+    surface.addTriangleIndex( tri.one,
+                              tri.two,
+                              tri.three );
 
-  tri.one = columns + 1 + count;
-  tri.two = 1 + count;
-  tri.three = 0 + count;
+    tri.one = ((row + 1) * columnSize) + 1 + col;
+    tri.two = ((row + 1) * columnSize) + col;
+    tri.three = (row * columnSize) + col + 1;
 
-  setTriVal( triLast, tri );
-  triLast++;
+    setTriVal( triLast, tri );
+    triLast++;
 
-  surface.addTriangleIndex( tri.one,
-                            tri.two,
-                            tri.three );
+    surface.addTriangleIndex( tri.one,
+                              tri.two,
+                              tri.three );
+
+    }
   }
 
 // mData.showStatus( "triLast: " + triLast );
@@ -357,7 +349,6 @@ for( int count = 0; count < last; count++ )
   setPosVal( tri.three, surfPosThree );
   }
 
-
 normalizeNormals();
 
 addSurfaceNormals();
@@ -373,11 +364,9 @@ int last = posSize;
 for( int count = 0; count < last; count++ )
   {
   SurfacePos surfPos = getPosVal( count );
-  surfPos.normal = Vector3.normalize(
-                               surfPos.normal );
-  surface.addNormal( surfPos.normal.x,
-                     surfPos.normal.y,
-                     surfPos.normal.z );
+  surface.addNormal( 0, // surfPos.normal.x,
+                     0, // surfPos.normal.y,
+                     1 ); //surfPos.normal.z );
   }
 }
 
