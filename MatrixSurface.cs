@@ -188,6 +188,36 @@ surface.addTriangleIndex( 0, 1, 2 );
 
 
 
+internal void setFromMatrixVec3( 
+                          MatrixVec3 matrix )
+{
+setSize( matrix.getRowSize(),
+         matrix.getColumnSize());
+
+SurfacePos surfPos;
+surfPos.normal.x = 0;
+surfPos.normal.y = 0;
+surfPos.normal.z = 0;
+
+for( int row = 0; row < rowSize; row++ )
+  {
+  for( int col = 0; col < columnSize; col++ )
+    {
+    int indexVec = matrix.getIndex( row, col );
+    Vector3.Vect vec = matrix.getVal( indexVec );
+    surfPos.pos.x = vec.x;
+    surfPos.pos.y = vec.y;
+    surfPos.pos.z = vec.z;
+
+    int index = getIndex( row, col );
+    setPosVal( index, surfPos );
+    }
+  }
+}
+
+
+
+/*
 internal void makeTestPattern()
 {
 // makeTestTriangle();
@@ -205,15 +235,15 @@ for( int row = 0; row < rowSize; row++ )
   {
   for( int col = 0; col < columnSize; col++ )
     {
-    surfPos.pos.x = col;
-    surfPos.pos.y = row;
-    surfPos.pos.z = col * col * 0.3;
+    surfPos.pos.x = col * 0.1;
+    surfPos.pos.y = row * 0.1;
+    surfPos.pos.z = col * col * -0.007;
     int index = getIndex( row, col );
     setPosVal( index, surfPos );
     }
   }
 }
-
+*/
 
 
 
@@ -364,9 +394,9 @@ int last = posSize;
 for( int count = 0; count < last; count++ )
   {
   SurfacePos surfPos = getPosVal( count );
-  surface.addNormal( 0, // surfPos.normal.x,
-                     0, // surfPos.normal.y,
-                     1 ); //surfPos.normal.z );
+  surface.addNormal( surfPos.normal.x,
+                     surfPos.normal.y,
+                     surfPos.normal.z );
   }
 }
 
