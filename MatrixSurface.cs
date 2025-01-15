@@ -188,7 +188,7 @@ surface.addTriangleIndex( 0, 1, 2 );
 
 
 
-internal void setFromMatrixVec3( 
+internal void setFromMatrixVec3(
                           MatrixVec3 matrix )
 {
 setSize( matrix.getRowSize(),
@@ -203,8 +203,8 @@ for( int row = 0; row < rowSize; row++ )
   {
   for( int col = 0; col < columnSize; col++ )
     {
-    int indexVec = matrix.getIndex( row, col );
-    Vector3.Vect vec = matrix.getVal( indexVec );
+    Vector3.Vect vec = matrix.getVal( row,
+                                      col );
     surfPos.pos.x = vec.x;
     surfPos.pos.y = vec.y;
     surfPos.pos.z = vec.z;
@@ -217,7 +217,27 @@ for( int row = 0; row < rowSize; row++ )
 
 
 
-/*
+internal void scalePosition( float scaleX,
+                             float scaleY,
+                             float scaleZ )
+{
+for( int row = 0; row < rowSize; row++ )
+  {
+  for( int col = 0; col < columnSize; col++ )
+    {
+    int index = getIndex( row, col );
+    SurfacePos surfPos = getPosVal( index );
+    surfPos.pos.x = surfPos.pos.x * scaleX;
+    surfPos.pos.y = surfPos.pos.y * scaleY;
+    surfPos.pos.z = surfPos.pos.z * scaleZ;
+    setPosVal( index, surfPos );
+    }
+  }
+}
+
+
+
+
 internal void makeTestPattern()
 {
 // makeTestTriangle();
@@ -243,7 +263,7 @@ for( int row = 0; row < rowSize; row++ )
     }
   }
 }
-*/
+
 
 
 
