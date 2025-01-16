@@ -189,7 +189,10 @@ surface.addTriangleIndex( 0, 1, 2 );
 
 
 internal void setFromMatrixVec3(
-                          MatrixVec3 matrix )
+                          MatrixVec3 matrix,
+                          float offsetX,
+                          float offsetY,
+                          float offsetZ )
 {
 setSize( matrix.getRowSize(),
          matrix.getColumnSize());
@@ -205,9 +208,9 @@ for( int row = 0; row < rowSize; row++ )
     {
     Vector3.Vect vec = matrix.getVal( row,
                                       col );
-    surfPos.pos.x = vec.x;
-    surfPos.pos.y = vec.y;
-    surfPos.pos.z = vec.z;
+    surfPos.pos.x = vec.x + offsetX;
+    surfPos.pos.y = vec.y + offsetY;
+    surfPos.pos.z = vec.z + offsetZ;
 
     int index = getIndex( row, col );
     setPosVal( index, surfPos );
